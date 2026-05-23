@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Vazirmatn — Farsi + Latin, Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+
+/* Design tokens — 60-30-10 from logo palette */
+:root {
+  --font-vazirmatn: "Vazirmatn", sans-serif;
+
+  /* 60%: dominant background (light blue, not pure white) */
+  --color-bg:           #EFF6FF;
+  --color-bg-subtle:    #DBEAFE;
+  --color-bg-card:      #FFFFFF;
+
+  /* 30%: structural surfaces */
+  --color-surface:      #BFDBFE;
+  --color-surface-hover:#93C5FD;
+  --color-surface-muted:#E0EFFE;
+
+  /* 10%: accent / primary */
+  --color-primary:      #1D4ED8;
+  --color-primary-hover:#1E40AF;
+  --color-primary-light:#DBEAFE;
+  --color-primary-text: #1E3A8A;
+
+  /* Text */
+  --color-text-main:        #0F172A;
+  --color-text-muted:       #475569;
+  --color-text-placeholder: #94A3B8;
+  --color-text-inverse:     #FFFFFF;
+
+  /* Borders */
+  --color-border:       #BFDBFE;
+  --color-border-strong:#93C5FD;
+
+  /* Layout */
+  --sidebar-width:  240px;
+  --header-height:  60px;
+}
+
+/* Base */
+html {
+  direction: rtl;
+  font-family: var(--font-vazirmatn);
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: var(--color-bg-subtle); }
+::-webkit-scrollbar-thumb  { background: var(--color-surface); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-surface-hover); }
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
