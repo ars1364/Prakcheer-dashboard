@@ -12,15 +12,15 @@ export default function DashboardShell({ title, breadcrumbs, children }: Props) 
     <div className="min-h-dvh bg-bg">
       <Sidebar />
       <Header title={title} breadcrumbs={breadcrumbs} />
-      {/* In RTL: sidebar is on the right (inline-start). Push main content left with padding-inline-start. */}
       <main
         style={{
           paddingInlineStart: "var(--sidebar-width)",
           paddingTop: "var(--header-height)",
         }}
-        className="p-24"
       >
-        {children}
+        <div style={{ maxWidth: "var(--content-max)" }} className="mx-auto p-24 flex flex-col gap-20">
+          {children}
+        </div>
       </main>
     </div>
   );

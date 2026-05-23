@@ -1,36 +1,47 @@
+type Trend = "up" | "down" | "neutral";
+
 interface StatCardProps {
   label: string;
   value: string;
-  sub?: string;
-  trend?: "up" | "down" | "neutral";
+  context?: string;
+  trend?: Trend;
   trendValue?: string;
-  icon?: string;
-  accent?: string;
+  icon: string;
 }
 
-export default function StatCard({ label, value, sub, trend, trendValue, icon, accent = "bg-primary-light" }: StatCardProps) {
-  const trendColor = trend === "up" ? "text-success" : trend === "down" ? "text-danger" : "text-text-muted";
-  const trendIcon  = trend === "up" ? "↑" : trend === "down" ? "↓" : "→";
+const TREND_COLOR: Record<Trend, string> = {
+  up:      "text-success",
+  down:    "text-danger",
+  neutral: "text-text-muted",
+};
+const TREND_ICON: Record<Trend, string> = {
+  up: "↑", down: "↓", neutral: "→",
+};
 
+export default function StatCard({ label, value, context, trend, trendValue, icon }: StatCardProps) {
   return (
-    <div className="bg-bg-card rounded-16 border border-border shadow-card p-20 flex items-start gap-16">
-      {icon && (
-        <div className={`w-44 h-44 rounded-12 ${accent} flex items-center justify-center text-xl shrink-0`}>
+    <div className="bg-bg-card rounded-20 border border-border p-20 flex flex-col gap-12"
+         style={{ boxShadow: "0 8px 24px rgba(15,23,42,0.04)", minHeight: 140 }}>
+      {/* Top row: icon pill + trend */}
+      <div className="flex items-center justify-between">
+        <div className="w-44 h-44 rounded-12 bg-brand-light flex items-center justify-center text-lg shrink-0">
           {icon}
         </div>
-      )}
-      <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium text-text-muted uppercase tracking-wide mb-4">{label}</p>
-        <p className="text-2xl font-bold text-text-main tabular-nums">{value}</p>
-        {(sub || trendValue) && (
-          <div className="flex items-center gap-8 mt-6">
-            {trendValue && (
-              <span className={`text-xs font-medium ${trendColor}`}>{trendIcon} {trendValue}</span>
-            )}
-            {sub && <span className="text-xs text-text-muted">{sub}</span>}
-          </div>
+        {trend && trendValue && (
+          <span className={`text-[12px] font-medium ${TREND_COLOR[trend]}`}>
+            {TREND_ICON[trend]} {trendValue}
+          </span>
         )}
       </div>
+
+      {/* Label */}
+      <p className="text-[13px] font-medium text-text-muted leading-none">{label}</p>
+
+      {/* Main value */}
+      <p className="text-[30px] font-bold text-text-main leading-none tabular-nums">{value}</p>
+
+      {/* Context */}
+      {context && <p className="text-[12px] text-text-muted">{context}</p>}
     </div>
   );
 }

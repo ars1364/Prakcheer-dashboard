@@ -1,9 +1,5 @@
 import type { Config } from "tailwindcss";
 
-// Prakcheer Design System — color tokens derived from the logo's 60-30-10 rule.
-// Logo colors (white bg excluded): light-blue cloud (#BFDBFE), mid-blue cloud (#4A8FE0), deep-blue sphere (#1A4FD6).
-// 60% → light blue surfaces | 30% → mid blue structure | 10% → deep blue accent
-
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -13,44 +9,67 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // 60% — dominant background tones (light blue, not pure white)
+        // Page / shell background
         bg: {
-          DEFAULT: "#EFF6FF",   // blue-50: primary page background
-          subtle: "#DBEAFE",    // blue-100: subtle surface variant
-          card:   "#FFFFFF",    // pure white for cards (floats above bg)
+          DEFAULT: "#f7faff",   // very-light blue-tinted page bg
+          card:    "#ffffff",   // white card surface
+          muted:   "#f0f6ff",   // table zebra, input bg
         },
-        // 30% — structural / secondary surfaces
-        surface: {
-          DEFAULT: "#BFDBFE",   // blue-200: sidebar active, panel bg
-          hover:   "#93C5FD",   // blue-300: hover state on secondary
-          muted:   "#E0EFFE",   // between 100–200: input bg, table rows
+        // Brand / primary (10%)
+        brand: {
+          DEFAULT: "#2554d8",
+          hover:   "#1e3fa8",
+          light:   "#eaf2ff",   // tint bg for chips, active sidebar
+          subtle:  "#dbeafe",   // gradient end for active sidebar
         },
-        // 10% — accent / primary action
-        primary: {
-          DEFAULT: "#1D4ED8",   // blue-700: CTA, active nav, links
-          hover:   "#1E40AF",   // blue-800: hover on primary
-          light:   "#DBEAFE",   // blue-100: tint bg for badges/chips
-          text:    "#1E3A8A",   // blue-900: text on primary-light surface
-        },
-        // Neutrals (cool blue-gray to stay in palette)
+        // Text
         text: {
-          main:    "#0F172A",   // slate-900: headings, body
-          muted:   "#475569",   // slate-600: secondary text, labels
-          placeholder: "#94A3B8", // slate-400
-          inverse: "#FFFFFF",
+          main:        "#111827",
+          muted:       "#64748b",
+          placeholder: "#94a3b8",
+          inverse:     "#ffffff",
         },
+        // Borders — softer, less saturated
         border: {
-          DEFAULT: "#BFDBFE",   // blue-200
-          strong:  "#93C5FD",   // blue-300
+          DEFAULT: "#dbe7f7",
+          strong:  "#b9d2f2",
         },
-        // Status colors — kept to a minimum
-        success: { DEFAULT: "#16A34A", light: "#DCFCE7" },
-        warning: { DEFAULT: "#D97706", light: "#FEF3C7" },
-        danger:  { DEFAULT: "#DC2626", light: "#FEE2E2" },
+        // Status
+        success: { DEFAULT: "#16a34a", light: "#dcfce7", text: "#14532d" },
+        warning: { DEFAULT: "#d97706", light: "#fef3c7", text: "#78350f" },
+        danger:  { DEFAULT: "#dc2626", light: "#fee2e2", text: "#7f1d1d" },
       },
       fontFamily: {
-        // Vazirmatn for Farsi/Latin — set via CSS variable in layout
         sans: ["var(--font-vazirmatn)", "Vazirmatn", "ui-sans-serif", "system-ui"],
+      },
+      // Pixel-exact spacing overrides (these replace the rem defaults for these keys)
+      spacing: {
+        "1":  "1px",
+        "2":  "2px",
+        "4":  "4px",
+        "6":  "6px",
+        "7":  "7px",
+        "8":  "8px",
+        "9":  "9px",
+        "10": "10px",
+        "12": "12px",
+        "14": "14px",
+        "16": "16px",
+        "18": "18px",
+        "20": "20px",
+        "24": "24px",
+        "28": "28px",
+        "32": "32px",
+        "34": "34px",
+        "36": "36px",
+        "40": "40px",
+        "44": "44px",
+        "48": "48px",
+        "56": "56px",
+        "60": "60px",
+        "64": "64px",
+        "80": "80px",
+        "96": "96px",
       },
       borderRadius: {
         "4":  "4px",
@@ -63,22 +82,9 @@ const config: Config = {
         "999": "999px",
       },
       boxShadow: {
-        card:  "0 1px 4px 0 rgba(29,78,216,0.06), 0 0 0 1px rgba(191,219,254,0.5)",
-        panel: "0 2px 12px 0 rgba(29,78,216,0.08)",
-        focus: "0 0 0 3px rgba(29,78,216,0.20)",
-      },
-      spacing: {
-        "4":  "4px",
-        "8":  "8px",
-        "12": "12px",
-        "16": "16px",
-        "20": "20px",
-        "24": "24px",
-        "32": "32px",
-        "40": "40px",
-        "48": "48px",
-        "56": "56px",
-        "64": "64px",
+        card:  "0 1px 3px 0 rgba(15,23,42,0.04), 0 0 0 1px #dbe7f7",
+        panel: "0 8px 24px 0 rgba(15,23,42,0.04)",
+        focus: "0 0 0 3px rgba(37,84,216,0.18)",
       },
     },
   },

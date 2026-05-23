@@ -2,62 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-/* No external CDN imports — Vazirmatn loaded via next/font/local in layout.tsx */
+/* No external CDN — Vazirmatn loaded via next/font/local in layout.tsx */
 
-/* Design tokens — 60-30-10 from logo palette */
 :root {
-  /* 60%: dominant background (light blue, not pure white) */
-  --color-bg:           #EFF6FF;
-  --color-bg-subtle:    #DBEAFE;
-  --color-bg-card:      #FFFFFF;
+  --font-vazirmatn: "Vazirmatn", sans-serif;
 
-  /* 30%: structural surfaces */
-  --color-surface:      #BFDBFE;
-  --color-surface-hover:#93C5FD;
-  --color-surface-muted:#E0EFFE;
+  /* Page */
+  --color-bg:           #f7faff;
+  --color-bg-card:      #ffffff;
+  --color-bg-muted:     #f0f6ff;
 
-  /* 10%: accent / primary */
-  --color-primary:      #1D4ED8;
-  --color-primary-hover:#1E40AF;
-  --color-primary-light:#DBEAFE;
-  --color-primary-text: #1E3A8A;
+  /* Brand */
+  --color-brand:        #2554d8;
+  --color-brand-hover:  #1e3fa8;
+  --color-brand-light:  #eaf2ff;
+  --color-brand-subtle: #dbeafe;
 
   /* Text */
-  --color-text-main:        #0F172A;
-  --color-text-muted:       #475569;
-  --color-text-placeholder: #94A3B8;
+  --color-text:         #111827;
+  --color-muted:        #64748b;
+  --color-placeholder:  #94a3b8;
 
   /* Borders */
-  --color-border:       #BFDBFE;
-  --color-border-strong:#93C5FD;
+  --color-border:       #dbe7f7;
+  --color-border-strong:#b9d2f2;
 
   /* Layout */
   --sidebar-width:  240px;
   --header-height:  60px;
+  --content-max:    1280px;
 }
 
-/* Base */
 html {
   direction: rtl;
-  font-family: var(--font-vazirmatn), "Vazirmatn", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-vazirmatn), ui-sans-serif, system-ui, sans-serif;
   background-color: var(--color-bg);
-  color: var(--color-text-main);
+  color: var(--color-text);
   -webkit-font-smoothing: antialiased;
 }
 
-body {
-  min-height: 100dvh;
-}
+body { min-height: 100dvh; }
 
-/* Scrollbar */
 ::-webkit-scrollbar        { width: 6px; height: 6px; }
-::-webkit-scrollbar-track  { background: var(--color-bg-subtle); }
-::-webkit-scrollbar-thumb  { background: var(--color-surface); border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-surface-hover); }
+::-webkit-scrollbar-track  { background: var(--color-bg-muted); }
+::-webkit-scrollbar-thumb  { background: var(--color-border-strong); border-radius: 999px; }
 
-/* Focus ring */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-brand);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* IP addresses and technical strings stay LTR inside RTL layouts */
+.ltr-text {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: embed;
 }
