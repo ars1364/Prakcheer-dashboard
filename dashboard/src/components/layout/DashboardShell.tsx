@@ -4,13 +4,21 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 
+interface Region {
+  id: string;
+  label: string;
+}
+
 interface Props {
   title: string;
   breadcrumbs?: { label: string; href?: string }[];
   children: React.ReactNode;
+  regions?: Region[];
+  selectedRegion?: string;
+  onRegionChange?: (id: string) => void;
 }
 
-export default function DashboardShell({ title, breadcrumbs, children }: Props) {
+export default function DashboardShell({ title, breadcrumbs, children, regions, selectedRegion, onRegionChange }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -20,6 +28,9 @@ export default function DashboardShell({ title, breadcrumbs, children }: Props) 
         title={title}
         breadcrumbs={breadcrumbs}
         onMenuToggle={() => setSidebarOpen(o => !o)}
+        regions={regions}
+        selectedRegion={selectedRegion}
+        onRegionChange={onRegionChange}
       />
       <main
         style={{

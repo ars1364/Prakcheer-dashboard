@@ -14,41 +14,115 @@ import StatusStrip from "@/components/dashboard/StatusStrip";
 import AlertsCard from "@/components/dashboard/AlertsCard";
 import type { Alert } from "@/components/dashboard/AlertsCard";
 
-// ─── Demo data ───────────────────────────────────────────
+// ─── Regions ──────────────────────────────────────────────────────────────────
+const REGIONS = [
+  { id: "all",     label: "همه مناطق" },
+  { id: "tehran",  label: "تهران"     },
+  { id: "isfahan", label: "اصفهان"    },
+  { id: "mashhad", label: "مشهد"      },
+];
+
+// ─── Servers ──────────────────────────────────────────────────────────────────
 type ServerStatus = "running" | "stopped" | "building" | "error";
+type Server = { id: string; name: string; status: ServerStatus; region: string; ip: string; vcpu: number; ram: number };
 
-const SERVERS: { id: string; name: string; status: ServerStatus; region: string; ip: string; vcpu: number; ram: number }[] = [
-  { id: "srv-01", name: "web-prod-01",    status: "running",  region: "تهران", ip: "185.94.97.211", vcpu: 4,  ram: 8  },
-  { id: "srv-02", name: "api-staging",   status: "stopped",  region: "تهران", ip: "185.94.97.212", vcpu: 2,  ram: 4  },
-  { id: "srv-03", name: "db-primary",    status: "running",  region: "تهران", ip: "185.94.97.213", vcpu: 8,  ram: 16 },
-  { id: "srv-04", name: "monitoring-thl",status: "building", region: "تهران", ip: "185.94.97.214", vcpu: 2,  ram: 4  },
+const ALL_SERVERS: Server[] = [
+  { id: "srv-01", name: "web-prod-01",    status: "running",  region: "tehran",  ip: "185.94.97.211", vcpu: 4, ram: 8  },
+  { id: "srv-02", name: "api-staging",    status: "stopped",  region: "tehran",  ip: "185.94.97.212", vcpu: 2, ram: 4  },
+  { id: "srv-03", name: "db-primary",     status: "running",  region: "tehran",  ip: "185.94.97.213", vcpu: 8, ram: 16 },
+  { id: "srv-04", name: "monitoring-thl", status: "building", region: "tehran",  ip: "185.94.97.214", vcpu: 2, ram: 4  },
+  { id: "srv-05", name: "web-prod-isf",   status: "running",  region: "isfahan", ip: "192.168.10.51", vcpu: 4, ram: 8  },
+  { id: "srv-06", name: "cache-isf",      status: "running",  region: "isfahan", ip: "192.168.10.52", vcpu: 2, ram: 4  },
+  { id: "srv-07", name: "worker-isf",     status: "error",    region: "isfahan", ip: "192.168.10.53", vcpu: 2, ram: 4  },
+  { id: "srv-08", name: "db-replica-msh", status: "running",  region: "mashhad", ip: "10.20.30.101",  vcpu: 4, ram: 8  },
+  { id: "srv-09", name: "cdn-node-msh",   status: "running",  region: "mashhad", ip: "10.20.30.102",  vcpu: 2, ram: 4  },
 ];
 
-const ALERTS: Alert[] = [
-  { id: "a1", severity: "warning",  title: "api-staging متوقف شده",              meta: "آخرین بررسی: ۵ دقیقه پیش",          href: "/iaas/servers/srv-02", actionLabel: "مشاهده سرور" },
-  { id: "a2", severity: "critical", title: "مصرف دیسک db-primary به ۸۲٪ رسیده", meta: "فضای باقی‌مانده: ۲۱.۶ GB از ۱۲۰ GB", href: "/iaas/servers/srv-03", actionLabel: "مشاهده جزئیات" },
+// ─── Alerts ───────────────────────────────────────────────────────────────────
+const ALL_ALERTS: (Alert & { region: string })[] = [
+  { id: "a1", severity: "warning",  title: "api-staging متوقف شده",              region: "tehran",  meta: "آخرین بررسی: ۵ دقیقه پیش",           href: "/iaas/servers/srv-02", actionLabel: "مشاهده سرور"    },
+  { id: "a2", severity: "critical", title: "مصرف دیسک db-primary به ۸۲٪ رسیده", region: "tehran",  meta: "فضای باقی‌مانده: ۲۱.۶ GB از ۱۲۰ GB",  href: "/iaas/servers/srv-03", actionLabel: "مشاهده جزئیات"  },
+  { id: "a3", severity: "critical", title: "worker-isf در وضعیت خطا",            region: "isfahan", meta: "آخرین خطا: ۱۲ دقیقه پیش",              href: "/iaas/servers/srv-07", actionLabel: "مشاهده سرور"    },
 ];
 
-const STATUS_MAP: Record<ServerStatus, { variant: "success"|"warning"|"danger"|"info"; label: string }> = {
+// ─── Status map ───────────────────────────────────────────────────────────────
+const STATUS_MAP: Record<ServerStatus, { variant: "success" | "warning" | "danger" | "info"; label: string }> = {
   running:  { variant: "success", label: "در حال اجرا" },
-  stopped:  { variant: "danger",  label: "متوقف" },
+  stopped:  { variant: "danger",  label: "متوقف"       },
   building: { variant: "info",    label: "در حال ساخت" },
-  error:    { variant: "danger",  label: "خطا" },
+  error:    { variant: "danger",  label: "خطا"         },
+};
+
+// ─── Per-region KPIs ──────────────────────────────────────────────────────────
+type Trend = "up" | "down" | "neutral";
+type KPI = {
+  heroLabel: string;
+  activeServers: string; activeServersContext: string;
+  cpu: string;          cpuTrend: Trend; cpuContext: string;
+  traffic: string;      trafficTrend: Trend;
+  billing: string;      billingTrend: Trend;
+};
+
+const REGION_KPIS: Record<string, KPI> = {
+  all:     { heroLabel: "۱۲ سرور فعال · ۳ شبکه", activeServers: "12", activeServersContext: "از ۲۰ سرور مجاز",  cpu: "38%", cpuTrend: "neutral", cpuContext: "در ۹ سرور",  traffic: "4.2 TB", trafficTrend: "up",      billing: "1.2 M", billingTrend: "down"    },
+  tehran:  { heroLabel: "۴ سرور فعال · ۱ شبکه",  activeServers: "4",  activeServersContext: "از ۱۰ سرور مجاز", cpu: "42%", cpuTrend: "up",     cpuContext: "در ۴ سرور",  traffic: "2.1 TB", trafficTrend: "up",      billing: "840 K", billingTrend: "down"    },
+  isfahan: { heroLabel: "۳ سرور فعال · ۱ شبکه",  activeServers: "3",  activeServersContext: "از ۶ سرور مجاز",  cpu: "31%", cpuTrend: "neutral", cpuContext: "در ۳ سرور",  traffic: "1.4 TB", trafficTrend: "neutral", billing: "260 K", billingTrend: "neutral" },
+  mashhad: { heroLabel: "۲ سرور فعال · ۱ شبکه",  activeServers: "2",  activeServersContext: "از ۴ سرور مجاز",  cpu: "28%", cpuTrend: "down",   cpuContext: "در ۲ سرور",  traffic: "700 GB", trafficTrend: "neutral", billing: "180 K", billingTrend: "neutral" },
+};
+
+// ─── Per-region service status ────────────────────────────────────────────────
+type ServiceStatus = "stable" | "degraded" | "incident" | "outage";
+const REGION_STATUS: Record<string, { status: ServiceStatus; lastUpdated: string }> = {
+  all:     { status: "incident", lastUpdated: "۲ دقیقه پیش"  },
+  tehran:  { status: "incident", lastUpdated: "۵ دقیقه پیش"  },
+  isfahan: { status: "outage",   lastUpdated: "۱۲ دقیقه پیش" },
+  mashhad: { status: "stable",   lastUpdated: "۱ دقیقه پیش"  },
+};
+
+// ─── Per-region billing ───────────────────────────────────────────────────────
+type BillingRow = { label: string; amount: string };
+const REGION_BILLING: Record<string, { rows: BillingRow[]; total: string }> = {
+  all:     { rows: [{ label: "سرویس محاسبات ابری", amount: "۸۵۰٬۰۰۰" }, { label: "پهنای باند", amount: "۲۲۰٬۰۰۰" }, { label: "فضای ذخیره‌سازی", amount: "۱۳۰٬۰۰۰" }], total: "۱٬۲۰۰٬۰۰۰" },
+  tehran:  { rows: [{ label: "سرویس محاسبات ابری", amount: "۶۰۰٬۰۰۰" }, { label: "پهنای باند", amount: "۱۵۰٬۰۰۰" }, { label: "فضای ذخیره‌سازی", amount: "۹۰٬۰۰۰"  }], total: "۸۴۰٬۰۰۰"   },
+  isfahan: { rows: [{ label: "سرویس محاسبات ابری", amount: "۱۸۰٬۰۰۰" }, { label: "پهنای باند", amount: "۵۰٬۰۰۰"  }, { label: "فضای ذخیره‌سازی", amount: "۳۰٬۰۰۰"  }], total: "۲۶۰٬۰۰۰"   },
+  mashhad: { rows: [{ label: "سرویس محاسبات ابری", amount: "۱۲۰٬۰۰۰" }, { label: "پهنای باند", amount: "۴۰٬۰۰۰"  }, { label: "فضای ذخیره‌سازی", amount: "۲۰٬۰۰۰"  }], total: "۱۸۰٬۰۰۰"   },
+};
+
+// ─── Per-region resource bars ─────────────────────────────────────────────────
+type Resources = { usedSrv: string; totalSrv: string; srvPct: number; usedIp: string; totalIp: string; ipPct: number; usedDisk: string; totalDisk: string; diskPct: number };
+const REGION_RESOURCES: Record<string, Resources> = {
+  all:     { usedSrv: "9",      totalSrv: "20",      srvPct: 45, usedIp: "8",  totalIp: "20", ipPct: 40, usedDisk: "750 GB", totalDisk: "2000 GB", diskPct: 37 },
+  tehran:  { usedSrv: "4",      totalSrv: "10",      srvPct: 40, usedIp: "4",  totalIp: "10", ipPct: 40, usedDisk: "450 GB", totalDisk: "1000 GB", diskPct: 45 },
+  isfahan: { usedSrv: "3",      totalSrv: "6",       srvPct: 50, usedIp: "3",  totalIp: "6",  ipPct: 50, usedDisk: "200 GB", totalDisk: "600 GB",  diskPct: 33 },
+  mashhad: { usedSrv: "2",      totalSrv: "4",       srvPct: 50, usedIp: "2",  totalIp: "4",  ipPct: 50, usedDisk: "100 GB", totalDisk: "400 GB",  diskPct: 25 },
 };
 
 type PageState = "loading" | "error" | "empty" | "partial" | "ready";
 
-// ─── Page ─────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
-  // For demo: toggle states from a selector
   const [pageState, setPageState] = useState<PageState>("ready");
+  const [region, setRegion]       = useState("all");
+
+  const servers   = region === "all" ? ALL_SERVERS : ALL_SERVERS.filter(s => s.region === region);
+  const alerts    = region === "all" ? ALL_ALERTS  : ALL_ALERTS.filter(a => a.region === region);
+  const kpis      = REGION_KPIS[region];
+  const svcStatus = REGION_STATUS[region];
+  const billing   = REGION_BILLING[region];
+  const resources = REGION_RESOURCES[region];
 
   return (
-    <DashboardShell title="داشبورد" breadcrumbs={[{ label: "پراکچیر" }]}>
+    <DashboardShell
+      title="داشبورد"
+      breadcrumbs={[{ label: "پراکچیر" }]}
+      regions={REGIONS}
+      selectedRegion={region}
+      onRegionChange={setRegion}
+    >
 
       {/* Dev state switcher — remove in production */}
       <div className="flex items-center gap-8 flex-wrap">
-        {(["ready","loading","error","empty","partial"] as PageState[]).map(s => (
+        {(["ready", "loading", "error", "empty", "partial"] as PageState[]).map(s => (
           <button
             key={s}
             onClick={() => setPageState(s)}
@@ -101,7 +175,7 @@ export default function DashboardPage() {
         </DashboardCard>
       )}
 
-      {/* ── Partial ── */}
+      {/* ── Partial banner ── */}
       {pageState === "partial" && (
         <div className="rounded-12 px-16 py-10 border text-[13px]"
              style={{ background: "#fef3c7", borderColor: "#fcd34d", color: "#78350f" }}>
@@ -121,7 +195,7 @@ export default function DashboardPage() {
               <p className="text-[12px] text-text-muted">خوش آمدید</p>
               <h2 className="text-[20px] font-bold text-text-main">احمدرضا عزیز</h2>
               <p className="text-[13px] text-text-muted">
-                ۱۲ سرور فعال · ۳ شبکه · موجودی:{" "}
+                {kpis.heroLabel} · موجودی:{" "}
                 <span className="font-semibold text-text-main ltr-text">۵٬۰۰۰٬۰۰۰ ریال</span>
               </p>
             </div>
@@ -131,32 +205,30 @@ export default function DashboardPage() {
           </div>
 
           {/* Row 1b — Service status strip */}
-          <StatusStrip status="incident" alertCount={ALERTS.length} lastUpdated="۲ دقیقه پیش" />
+          <StatusStrip status={svcStatus.status} alertCount={alerts.length} lastUpdated={svcStatus.lastUpdated} />
 
           {/* Row 2 — KPI metrics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-16">
-            <MetricCard icon="▣" label="سرورهای فعال"  value="12"     trend="up"      trendValue="2 این ماه" context="از 20 سرور مجاز"        />
-            <MetricCard icon="⚡" label="مصرف CPU"      value="38%"    trend="neutral" trendValue="میانگین"   context="در 12 سرور"            />
-            <MetricCard icon="⇅" label="ترافیک شبکه"  value="4.2 TB" trend="up"      trendValue="14%"       context="این ماه"               />
-            <MetricCard icon="◈" label="هزینه این ماه" value="1.2 M"  trend="down"    trendValue="6%"        context="ریال — نسبت به ماه قبل" />
+            <MetricCard icon="▣" label="سرورهای فعال"  value={kpis.activeServers} trend="up"               trendValue="2 این ماه" context={kpis.activeServersContext} />
+            <MetricCard icon="⚡" label="مصرف CPU"      value={kpis.cpu}           trend={kpis.cpuTrend}     trendValue="میانگین"   context={kpis.cpuContext}          />
+            <MetricCard icon="⇅" label="ترافیک شبکه"  value={kpis.traffic}       trend={kpis.trafficTrend} trendValue="14%"       context="این ماه"                  />
+            <MetricCard icon="◈" label="هزینه این ماه" value={kpis.billing}       trend={kpis.billingTrend} trendValue="6%"        context="ریال — نسبت به ماه قبل"  />
           </div>
 
           {/* Row 3 — Alerts + server table */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-16">
-            {/* Alerts */}
             <div className="xl:col-span-1">
-              <AlertsCard alerts={ALERTS} />
+              <AlertsCard alerts={alerts} />
             </div>
 
-            {/* Server table */}
             <div className="xl:col-span-2">
               <DashboardCard
                 title="آخرین سرورها"
                 action={<a href="/iaas/servers" className="text-[12px] text-brand hover:text-brand-hover font-medium">مشاهده همه ←</a>}
                 padding={false}
               >
-                {SERVERS.length === 0 ? (
-                  <EmptyState icon="▣" title="هنوز سروری ایجاد نشده" />
+                {servers.length === 0 ? (
+                  <EmptyState icon="▣" title="در این منطقه سروری وجود ندارد" />
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[480px]">
@@ -170,9 +242,8 @@ export default function DashboardPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {SERVERS.map((s, i) => (
+                        {servers.map((s, i) => (
                           <tr key={s.id} className={`border-b border-border last:border-0 hover:bg-bg transition-colors ${i % 2 !== 0 ? "bg-bg" : ""}`}>
-                            {/* Clickable server name */}
                             <td className="px-20 py-12">
                               <a href={`/iaas/servers/${s.id}`} className="text-[14px] font-medium text-brand hover:text-brand-hover hover:underline">
                                 {s.name}
@@ -192,10 +263,10 @@ export default function DashboardPage() {
                             <td className="px-16 py-12 text-end">
                               <ActionMenu
                                 items={[
-                                  { label: "مشاهده سرور",   onClick: () => {} },
-                                  { label: "کنسول",          onClick: () => {} },
+                                  { label: "مشاهده سرور",    onClick: () => {} },
+                                  { label: "کنسول",           onClick: () => {} },
                                   { label: "راه‌اندازی مجدد", onClick: () => {} },
-                                  { label: "خاموش کردن",    onClick: () => {}, danger: true },
+                                  { label: "خاموش کردن",     onClick: () => {}, danger: true },
                                 ]}
                               />
                             </td>
@@ -213,9 +284,9 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             <DashboardCard title="مصرف منابع">
               <div className="flex flex-col gap-16">
-                <ResourceBar label="سرورها"   used="12" total="20"    pct={60} />
-                <ResourceBar label="IP عمومی" used="8"  total="20"    pct={40} color="#16a34a" />
-                <ResourceBar label="حجم دیسک" used="750 GB" total="2000 GB" pct={37} color="#d97706" />
+                <ResourceBar label="سرورها"   used={resources.usedSrv}  total={resources.totalSrv}  pct={resources.srvPct}  />
+                <ResourceBar label="IP عمومی" used={resources.usedIp}   total={resources.totalIp}   pct={resources.ipPct}   color="#16a34a" />
+                <ResourceBar label="حجم دیسک" used={resources.usedDisk} total={resources.totalDisk} pct={resources.diskPct} color="#d97706" />
               </div>
             </DashboardCard>
 
@@ -224,11 +295,7 @@ export default function DashboardPage() {
               action={<a href="/billing" className="text-[12px] text-brand font-medium">جزئیات ←</a>}
             >
               <div className="flex flex-col divide-y divide-border -mx-20 -mb-20">
-                {[
-                  { label: "سرویس محاسبات ابری", amount: "۸۵۰٬۰۰۰" },
-                  { label: "پهنای باند",          amount: "۲۲۰٬۰۰۰" },
-                  { label: "فضای ذخیره‌سازی",    amount: "۱۳۰٬۰۰۰" },
-                ].map((row) => (
+                {billing.rows.map((row) => (
                   <div key={row.label} className="flex items-center justify-between px-20 py-10">
                     <span className="text-[13px] text-text-muted">{row.label}</span>
                     <span className="text-[13px] font-semibold text-text-main ltr-text">{row.amount} ریال</span>
@@ -236,7 +303,7 @@ export default function DashboardPage() {
                 ))}
                 <div className="flex items-center justify-between px-20 py-12 bg-bg rounded-b-20">
                   <span className="text-[14px] font-bold text-text-main">جمع کل</span>
-                  <span className="text-[18px] font-bold text-brand ltr-text">۱٬۲۰۰٬۰۰۰ ریال</span>
+                  <span className="text-[18px] font-bold text-brand ltr-text">{billing.total} ریال</span>
                 </div>
               </div>
             </DashboardCard>
