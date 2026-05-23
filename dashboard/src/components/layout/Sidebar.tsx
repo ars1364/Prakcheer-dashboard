@@ -59,7 +59,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
       <aside
         style={{ width: "var(--sidebar-width)" }}
-        className={`fixed top-0 start-0 h-full flex flex-col bg-bg-card border-e border-border z-40 overflow-y-auto transition-transform duration-200
+        className={`glass-shell fixed top-0 start-0 h-full flex flex-col border-e z-40 overflow-y-auto transition-transform duration-200
           ${isOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"}`}
       >
         {/* Brand */}

@@ -9,8 +9,8 @@ interface DashboardCardProps {
 export default function DashboardCard({ title, action, children, padding = true, className = "" }: DashboardCardProps) {
   return (
     <div
-      className={`bg-bg-card rounded-20 border border-border flex flex-col ${className}`}
-      style={{ boxShadow: "0 8px 24px rgba(15,23,42,0.04)" }}
+      className={`glass rounded-20 border flex flex-col ${className}`}
+      style={{ boxShadow: "0 8px 32px rgba(15,50,47,0.10)" }}
     >
       {title && (
         <div className="flex items-center justify-between px-20 py-14 border-b border-border shrink-0">

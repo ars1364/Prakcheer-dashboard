@@ -14,7 +14,7 @@ export default function DashboardShell({ title, breadcrumbs, children }: Props) 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-dvh bg-bg">
+    <div className="min-h-dvh">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <Header
         title={title}

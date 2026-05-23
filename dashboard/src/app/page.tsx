@@ -114,8 +114,8 @@ export default function DashboardPage() {
         <>
           {/* Row 1 — Welcome hero */}
           <div
-            className="rounded-20 px-24 py-18 flex items-center justify-between gap-16 border border-border"
-            style={{ background: "linear-gradient(135deg, #eaf2ff 0%, #f7faff 100%)", boxShadow: "0 8px 24px rgba(15,23,42,0.04)" }}
+            className="glass rounded-20 px-24 py-18 flex items-center justify-between gap-16 border"
+            style={{ boxShadow: "0 8px 32px rgba(15,50,47,0.10)" }}
           >
             <div className="flex flex-col gap-4">
               <p className="text-[12px] text-text-muted">خوش آمدید</p>

@@ -10,7 +10,7 @@ export default function Header({ title, breadcrumbs, onMenuToggle }: HeaderProps
   return (
     <header
       style={{ height: "var(--header-height)", paddingInlineStart: "var(--sidebar-width)" }}
-      className="fixed top-0 inset-x-0 z-10 flex items-center bg-bg-card border-b border-border px-24 gap-16 lg:px-24"
+      className="glass-shell fixed top-0 inset-x-0 z-10 flex items-center border-b px-24 gap-16"
     >
       {/* Mobile hamburger — only visible below lg */}
       <button
