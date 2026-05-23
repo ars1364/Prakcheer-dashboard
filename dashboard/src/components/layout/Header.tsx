@@ -7,11 +7,16 @@ interface HeaderProps {
 
 export default function Header({ title, breadcrumbs }: HeaderProps) {
   return (
+    // In RTL: sidebar is on the right (inline-start). Header must not overlap it.
+    // padding-inline-start pushes header content away from the right sidebar.
     <header
-      style={{ height: "var(--header-height)", paddingInlineEnd: "var(--sidebar-width)" }}
-      className="fixed top-0 start-0 end-0 z-10 flex items-center bg-bg-card border-b border-border shadow-card px-24 gap-16"
+      style={{
+        height: "var(--header-height)",
+        paddingInlineStart: "var(--sidebar-width)",
+      }}
+      className="fixed top-0 inset-x-0 z-10 flex items-center bg-bg-card border-b border-border shadow-card px-24 gap-16"
     >
-      {/* Breadcrumb + title */}
+      {/* Breadcrumb + title — flows from right in RTL */}
       <div className="flex items-center gap-8 flex-1 min-w-0">
         {breadcrumbs?.map((crumb, i) => (
           <span key={i} className="flex items-center gap-8">

@@ -2,13 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Vazirmatn — Farsi + Latin, Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+/* No external CDN imports — Vazirmatn loaded via next/font/local in layout.tsx */
 
 /* Design tokens — 60-30-10 from logo palette */
 :root {
-  --font-vazirmatn: "Vazirmatn", sans-serif;
-
   /* 60%: dominant background (light blue, not pure white) */
   --color-bg:           #EFF6FF;
   --color-bg-subtle:    #DBEAFE;
@@ -29,7 +26,6 @@
   --color-text-main:        #0F172A;
   --color-text-muted:       #475569;
   --color-text-placeholder: #94A3B8;
-  --color-text-inverse:     #FFFFFF;
 
   /* Borders */
   --color-border:       #BFDBFE;
@@ -43,7 +39,7 @@
 /* Base */
 html {
   direction: rtl;
-  font-family: var(--font-vazirmatn);
+  font-family: var(--font-vazirmatn), "Vazirmatn", ui-sans-serif, system-ui, sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text-main);
   -webkit-font-smoothing: antialiased;

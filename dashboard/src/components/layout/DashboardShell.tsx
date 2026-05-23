@@ -12,9 +12,10 @@ export default function DashboardShell({ title, breadcrumbs, children }: Props) 
     <div className="min-h-dvh bg-bg">
       <Sidebar />
       <Header title={title} breadcrumbs={breadcrumbs} />
+      {/* In RTL: sidebar is on the right (inline-start). Push main content left with padding-inline-start. */}
       <main
         style={{
-          paddingInlineEnd: "var(--sidebar-width)",
+          paddingInlineStart: "var(--sidebar-width)",
           paddingTop: "var(--header-height)",
         }}
         className="p-24"
