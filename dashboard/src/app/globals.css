@@ -19,7 +19,7 @@
    ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
-  --font-vazirmatn: "Vazirmatn", sans-serif;
+  /* --font-vazirmatn is injected by next/font/local — do NOT set it here */
 
   /* Page: transparent so wallpaper shows */
   --color-bg:       transparent;
