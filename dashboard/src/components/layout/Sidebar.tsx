@@ -83,21 +83,35 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 const isOpen2  = expanded === item.href;
                 return (
                   <div key={item.href}>
-                    <button
-                      onClick={() => item.children ? setExpanded(isOpen2 ? null : item.href) : undefined}
-                      className="relative w-full flex items-center gap-10 px-12 py-9 rounded-8 text-[13px] font-medium transition-all text-start"
-                      style={isActive ? {
-                        background: "linear-gradient(270deg, #eaf2ff, #dbeafe)",
-                        borderInlineStart: "3px solid #2554d8",
-                        color: "#2554d8",
-                      } : { color: "#64748b" }}
-                    >
-                      <span className="text-[15px] leading-none shrink-0">{item.icon}</span>
-                      <span className="flex-1">{item.label}</span>
-                      {item.children && (
+                    {item.children ? (
+                      <button
+                        onClick={() => setExpanded(isOpen2 ? null : item.href)}
+                        className="relative w-full flex items-center gap-10 px-12 py-9 rounded-8 text-[13px] font-medium transition-all text-start"
+                        style={isActive ? {
+                          background: "linear-gradient(270deg, #eaf2ff, #dbeafe)",
+                          borderInlineStart: "3px solid #2554d8",
+                          color: "#2554d8",
+                        } : { color: "#64748b" }}
+                      >
+                        <span className="text-[15px] leading-none shrink-0">{item.icon}</span>
+                        <span className="flex-1">{item.label}</span>
                         <span className={`text-[11px] transition-transform duration-150 ${isOpen2 ? "rotate-180" : ""}`}>▾</span>
-                      )}
-                    </button>
+                      </button>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        onClick={onClose}
+                        className="relative w-full flex items-center gap-10 px-12 py-9 rounded-8 text-[13px] font-medium transition-all text-start"
+                        style={isActive ? {
+                          background: "linear-gradient(270deg, #eaf2ff, #dbeafe)",
+                          borderInlineStart: "3px solid #2554d8",
+                          color: "#2554d8",
+                        } : { color: "#64748b" }}
+                      >
+                        <span className="text-[15px] leading-none shrink-0">{item.icon}</span>
+                        <span className="flex-1">{item.label}</span>
+                      </Link>
+                    )}
 
                     {item.children && isOpen2 && (
                       <div className="mt-2 flex flex-col gap-1 ms-12 border-s border-border ps-8">
