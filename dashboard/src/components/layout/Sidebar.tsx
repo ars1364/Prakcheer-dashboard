@@ -40,8 +40,9 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
   {
     group: "مشاهده‌پذیری",
     items: [
-      { label: "مانیتورینگ", href: "/monitoring", icon: "◑" },
-      { label: "لاگ فعالیت", href: "/activity-log", icon: "◫" },
+      { label: "مانیتورینگ", href: "/monitoring",   icon: "◑" },
+      { label: "هشدارها",   href: "/alerts",       icon: "◭" },
+      { label: "لاگ فعالیت",href: "/activity-log", icon: "◫" },
     ],
   },
   {
