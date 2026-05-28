@@ -29,6 +29,7 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
           { label: "اسنپ‌شات", href: "/iaas/snapshots" },
         ],
       },
+      { label: "VPC",              href: "/vpc",             icon: "◱" },
       { label: "ذخیره‌سازی ابری", href: "/object-storage", icon: "◫" },
       { label: "کوبرنتیس",        href: "/kubernetes",      icon: "⬡" },
       { label: "پایگاه داده",     href: "/databases",       icon: "◈" },
