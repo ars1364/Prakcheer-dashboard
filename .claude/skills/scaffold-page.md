@@ -62,7 +62,15 @@ export default function <PageName>Page() {
       {/* Main content — shown in ready + partial */}
       {(pageState === "ready" || pageState === "partial") && (
         <>
-          {/* KPI row */}
+          {/* Unique stat header — do NOT use the generic 4-MetricCard grid.
+              Choose a pattern from design/patterns.md that fits the page's domain:
+              - segmented bar panel (fleet/allocation/capacity)
+              - metric + breakdown bars (billing, cost, quota)
+              - threat/alert hero (security, firewall, incidents)
+              - dot/grid map (per-item status: tickets, IPs, servers)
+              Each page MUST look different from every other page at the top. */}
+          {/* Charts / visualization section */}
+          {/* Filter bar */}
           {/* Main card / table */}
         </>
       )}
