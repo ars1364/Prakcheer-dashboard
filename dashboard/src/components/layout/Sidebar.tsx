@@ -64,6 +64,7 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
       { label: "پشتیبانی",  href: "/support",   icon: "◎" },
       { label: "صورتحساب",     href: "/billing",        icon: "◈" },
       { label: "کاوشگر هزینه", href: "/cost-explorer",  icon: "◉" },
+      { label: "پروفایل",   href: "/profile",  icon: "◨" },
       { label: "تنظیمات",  href: "/settings", icon: "◧" },
     ],
   },
