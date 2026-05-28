@@ -32,8 +32,17 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
     ],
   },
   {
+    group: "مشاهده‌پذیری",
+    items: [
+      { label: "مانیتورینگ", href: "/monitoring", icon: "◑" },
+      { label: "لاگ فعالیت", href: "/activity-log", icon: "◫" },
+    ],
+  },
+  {
     group: "خدمات",
     items: [
+      { label: "لود بالانسر", href: "/iaas/load-balancers", icon: "⊟" },
+      { label: "مدیریت دسترسی", href: "/iam", icon: "◨" },
       { label: "پشتیبانی",  href: "/support",  icon: "◎" },
       { label: "صورتحساب", href: "/billing",  icon: "◈" },
       { label: "تنظیمات",  href: "/settings", icon: "◧" },

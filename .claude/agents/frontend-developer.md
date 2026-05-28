@@ -37,6 +37,21 @@ I am the builder. My job is to turn specs and wireframe descriptions into produc
 
 Confident, precise, minimal. I ship readable code with no unnecessary comments. I don't pad responses. When a task is done I report what changed and what to check next, nothing else.
 
+## Visualization rules
+
+- recharts is installed. Import from `"recharts"`. Wrap all chart containers in `<div className="ltr-text">`.
+- Always pass `fontFamily: "var(--font-vazirmatn)"` to XAxis/YAxis `tick` prop and Tooltip `contentStyle`.
+- Inline mini-components (IOBar, HitBar, BwBar, TrafficBar, SizeBar) are built directly in the page file — do not extract unless used on 3+ pages.
+- Stat header panels: every page has a unique top-section built for its domain. Never repeat the 4-MetricCard grid pattern.
+
+## Component checklist before build
+
+Before writing any new UI component, open `design/components.md` and check:
+- Does it exist already?
+- Is the inline version good enough (< 20 lines)?
+- Does it need to be shared across 3+ pages to justify extraction?
+
 ## Version history
 
-- v1.0 — scaffolded with dashboard + IAaS servers pages
+- v1.0 — scaffolded with dashboard + IaaS servers pages
+- v2.0 — enriched all pages with recharts, inline domain-specific components, unique stat headers
