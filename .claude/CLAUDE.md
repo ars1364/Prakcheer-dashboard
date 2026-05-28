@@ -47,6 +47,13 @@ RTL Farsi cloud-infrastructure dashboard. Next.js 14 App Router, Tailwind CSS, V
 | features/17-kubernetes | done |
 | features/18-databases | done |
 | features/19-cdn | done |
+| features/20-vpc | done |
+| features/21-ssh-keys | done |
+| features/22-alerts | done |
+| features/23-cost-explorer | done |
+| features/24-security | done |
+| features/25-backup | done |
+| features/26-marketplace | done |
 
 ## Invariants
 

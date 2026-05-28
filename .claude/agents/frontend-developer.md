@@ -68,3 +68,4 @@ When comparing two metrics with different scales (e.g. GB vs requests), use two 
 - v1.0 — scaffolded with dashboard + IaaS servers pages
 - v2.0 — enriched all pages with recharts, inline domain-specific components, unique stat headers
 - v3.0 — 10 new pages: monitoring, load-balancers, activity-log, iam, object-storage, dns, kubernetes, databases, cdn + sidebar expanded
+- v4.0 — 12 more pages: vpc, ssh-keys, alerts, cost-explorer, security, backup, marketplace + docs updated. Dashboard now 26 pages total.
