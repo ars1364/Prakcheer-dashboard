@@ -52,6 +52,24 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
     ],
   },
   {
+    group: "مدیریت پلتفرم",
+    items: [
+      {
+        label: "پنل ادمین", href: "/admin", icon: "◨",
+        children: [
+          { label: "مستاجران",          href: "/admin/tenants"                   },
+          { label: "کاربران",           href: "/admin/users"                     },
+          { label: "تأییدیه‌ها",        href: "/admin/approvals/pending"         },
+          { label: "مناطق",             href: "/admin/regions"                   },
+          { label: "مانیتورینگ",        href: "/admin/monitoring/services"       },
+          { label: "هشدارها",           href: "/admin/alerts"                    },
+          { label: "حسابرسی",          href: "/admin/audit/platform"            },
+          { label: "عملیات",            href: "/admin/operations/background-jobs"},
+        ],
+      },
+    ],
+  },
+  {
     group: "خدمات",
     items: [
       { label: "لود بالانسر",  href: "/iaas/load-balancers", icon: "⊟" },
