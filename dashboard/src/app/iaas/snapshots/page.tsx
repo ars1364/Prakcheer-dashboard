@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import DashboardShell from "@/components/layout/DashboardShell";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
@@ -125,17 +124,7 @@ export default function SnapshotsPage() {
   const fontStyle = { fontFamily: "var(--font-vazirmatn)", fontSize: 11 };
 
   return (
-    <DashboardShell
-      title="اسنپ‌شات‌ها"
-      breadcrumbs={[
-        { label: "پراکچیر", href: "/" },
-        { label: "زیرساخت ابری", href: "/iaas" },
-        { label: "اسنپ‌شات‌ها" },
-      ]}
-      regions={REGIONS}
-      selectedRegion={region}
-      onRegionChange={setRegion}
-    >
+    <div style={{ maxWidth: "var(--content-max)" }} className="mx-auto p-16 sm:p-24 flex flex-col gap-16 sm:gap-20">
       {/* Backup coverage header */}
       <div className="glass rounded-16 px-20 py-16 mb-4">
         <div className="flex flex-wrap gap-20 items-center">
@@ -380,6 +369,6 @@ export default function SnapshotsPage() {
           </table>
         </div>
       </DashboardCard>
-    </DashboardShell>
+    </div>
   );
 }

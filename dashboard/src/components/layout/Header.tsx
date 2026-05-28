@@ -6,7 +6,7 @@ interface Region {
 }
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   breadcrumbs?: { label: string; href?: string }[];
   onMenuToggle: () => void;
   regions?: Region[];

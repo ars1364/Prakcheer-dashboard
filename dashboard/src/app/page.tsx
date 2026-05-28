@@ -5,7 +5,6 @@ import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, CartesianGrid
 } from "recharts";
-import DashboardShell from "@/components/layout/DashboardShell";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ResourceBar from "@/components/ui/ResourceBar";
@@ -145,13 +144,7 @@ export default function DashboardPage() {
   const resources = REGION_RESOURCES[region];
 
   return (
-    <DashboardShell
-      title="داشبورد"
-      breadcrumbs={[{ label: "پراکچیر" }]}
-      regions={REGIONS}
-      selectedRegion={region}
-      onRegionChange={setRegion}
-    >
+    <div style={{ maxWidth: "var(--content-max)" }} className="mx-auto p-16 sm:p-24 flex flex-col gap-16 sm:gap-20">
       {/* Welcome hero */}
       <div className="glass rounded-20 px-24 py-18 flex items-center justify-between gap-16 border"
            style={{ boxShadow: "0 8px 32px rgba(15,50,47,0.10)" }}>
@@ -356,6 +349,6 @@ export default function DashboardPage() {
           </div>
         </DashboardCard>
       </div>
-    </DashboardShell>
+    </div>
   );
 }

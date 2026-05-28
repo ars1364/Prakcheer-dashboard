@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import DashboardShell from "@/components/layout/DashboardShell";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
@@ -120,17 +119,7 @@ export default function FirewallPage() {
   const topRules = useMemo(() => [...byRegion].sort((a, b) => b.hits - a.hits).slice(0, 5), [byRegion]);
 
   return (
-    <DashboardShell
-      title="فایروال"
-      breadcrumbs={[
-        { label: "پراکچیر", href: "/" },
-        { label: "زیرساخت ابری", href: "/iaas" },
-        { label: "فایروال" },
-      ]}
-      regions={REGIONS}
-      selectedRegion={region}
-      onRegionChange={setRegion}
-    >
+    <div style={{ maxWidth: "var(--content-max)" }} className="mx-auto p-16 sm:p-24 flex flex-col gap-16 sm:gap-20">
       {/* Threat defense header */}
       <div className="glass rounded-16 px-20 py-16 mb-4">
         <div className="flex flex-wrap gap-16 items-center">
@@ -298,6 +287,6 @@ export default function FirewallPage() {
           </DashboardCard>
         </div>
       </div>
-    </DashboardShell>
+    </div>
   );
 }

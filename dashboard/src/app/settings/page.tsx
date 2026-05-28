@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import DashboardShell from "@/components/layout/DashboardShell";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 
@@ -39,10 +38,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <DashboardShell
-      title="تنظیمات"
-      breadcrumbs={[{ label: "پراکچیر", href: "/" }, { label: "تنظیمات" }]}
-    >
+    <div style={{ maxWidth: "var(--content-max)" }} className="mx-auto p-16 sm:p-24 flex flex-col gap-16 sm:gap-20">
       <div className="flex gap-24 items-start">
         {/* Side tab navigation */}
         <div className="glass rounded-12 p-8 flex flex-col gap-2 min-w-[160px] shrink-0">
@@ -271,6 +267,6 @@ export default function SettingsPage() {
 
         </div>
       </div>
-    </DashboardShell>
+    </div>
   );
 }

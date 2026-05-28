@@ -5,7 +5,6 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   PieChart, Pie, Cell, Legend
 } from "recharts";
-import DashboardShell from "@/components/layout/DashboardShell";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 
@@ -100,13 +99,7 @@ export default function BillingPage() {
   const pieData = billing.rows.map(r => ({ name: r.label, value: r.pct, color: r.color }));
 
   return (
-    <DashboardShell
-      title="صورتحساب"
-      breadcrumbs={[{ label: "پراکچیر", href: "/" }, { label: "صورتحساب" }]}
-      regions={REGIONS}
-      selectedRegion={region}
-      onRegionChange={setRegion}
-    >
+    <div style={{ maxWidth: "var(--content-max)" }} className="mx-auto p-16 sm:p-24 flex flex-col gap-16 sm:gap-20">
       {/* Spend summary header */}
       <div className="glass rounded-16 px-20 py-18 mb-4">
         <div className="flex flex-wrap gap-24 items-start">
@@ -273,6 +266,6 @@ export default function BillingPage() {
           </table>
         </div>
       </DashboardCard>
-    </DashboardShell>
+    </div>
   );
 }

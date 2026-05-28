@@ -5,7 +5,6 @@ import {
   BarChart, Bar, AreaChart, Area, XAxis, YAxis, Tooltip,
   ResponsiveContainer, CartesianGrid,
 } from "recharts";
-import DashboardShell from "@/components/layout/DashboardShell";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
@@ -167,17 +166,7 @@ export default function LoadBalancersPage() {
   const regionLabel = (r: string) => ({ tehran: "تهران", isfahan: "اصفهان", mashhad: "مشهد" }[r] ?? r);
 
   return (
-    <DashboardShell
-      title="لود بالانسر"
-      breadcrumbs={[
-        { label: "پراکچیر", href: "/" },
-        { label: "زیرساخت ابری", href: "/iaas" },
-        { label: "لود بالانسر" },
-      ]}
-      regions={REGIONS}
-      selectedRegion={region}
-      onRegionChange={setRegion}
-    >
+    <div style={{ maxWidth: "var(--content-max)" }} className="mx-auto p-16 sm:p-24 flex flex-col gap-16 sm:gap-20">
       {/* Traffic throughput header */}
       <div className="glass rounded-16 px-20 py-16 mb-20">
         <div className="flex flex-wrap gap-20 items-center">
@@ -356,6 +345,6 @@ export default function LoadBalancersPage() {
           </table>
         </div>
       </DashboardCard>
-    </DashboardShell>
+    </div>
   );
 }
