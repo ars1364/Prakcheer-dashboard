@@ -30,6 +30,7 @@ RTL Farsi cloud-infrastructure dashboard. Next.js 14 App Router, Tailwind CSS, V
 |--------|--------|
 | [features/01-dashboard/spec.md](features/01-dashboard/spec.md) | done |
 | [features/02-iaas-servers/spec.md](features/02-iaas-servers/spec.md) | done |
+| [features/03-iaas-networks/spec.md](features/03-iaas-networks/spec.md) | done |
 
 ## Invariants
 
