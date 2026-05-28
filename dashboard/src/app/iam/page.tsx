@@ -239,12 +239,18 @@ export default function IAMPage() {
                 data={ALL_USERS.filter(u => u.apiKeys > 0).map(u => ({ name: u.name.split(" ")[0], keys: u.apiKeys }))}
                 margin={{ top: 4, right: 8, left: -16, bottom: 0 }}
               >
+                <defs>
+                  <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                 <XAxis dataKey="name" tick={{ ...fontStyle, fontFamily: "var(--font-vazirmatn)" }} axisLine={false} tickLine={false} />
                 <YAxis tick={fontStyle} axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 8, fontFamily: "var(--font-vazirmatn)", fontSize: 12 }}
                   formatter={(v) => [`${v} کلید`]} />
-                <Bar dataKey="keys" fill="#8b5cf6" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                <Bar dataKey="keys" fill="url(#barGrad)" radius={[4, 4, 0, 0]} maxBarSize={36} />
               </BarChart>
             </ResponsiveContainer>
           </div>

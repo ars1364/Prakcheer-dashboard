@@ -235,12 +235,22 @@ export default function SnapshotsPage() {
           <div className="h-[210px] ltr-text">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={REGION_STORAGE} margin={{ top: 4, right: 4, left: -12, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#22c55e" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#22c55e" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                 <XAxis dataKey="name" tick={fontStyle} axisLine={false} tickLine={false} />
                 <YAxis tick={fontStyle} axisLine={false} tickLine={false} unit=" GB" />
                 <Tooltip contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 8, ...fontStyle }} formatter={(v) => [`${v} GB`]} />
-                <Bar dataKey="سرور" stackId="a" fill="#22c55e" />
-                <Bar dataKey="دیسک" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="سرور" stackId="a" fill="url(#barGrad1)" />
+                <Bar dataKey="دیسک" stackId="a" fill="url(#barGrad2)" radius={[4, 4, 0, 0]} />
                 <Legend wrapperStyle={{ ...fontStyle, paddingTop: 8 }} />
               </BarChart>
             </ResponsiveContainer>

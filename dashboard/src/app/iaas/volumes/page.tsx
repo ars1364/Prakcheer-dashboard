@@ -201,6 +201,20 @@ export default function VolumesPage() {
           <DashboardCard title="فضای ذخیره‌سازی بر اساس منطقه (GB)">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={REGION_STORAGE} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1a4d8f" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#1a4d8f" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#16a34a" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad3" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#9ca3af" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#9ca3af" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(94,168,161,0.15)" vertical={false} />
                 <XAxis dataKey="region" tick={{ fontSize: 12, fill: "#3d5957", fontFamily: "var(--font-vazirmatn)" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#3d5957" }} axisLine={false} tickLine={false} />
@@ -208,9 +222,9 @@ export default function VolumesPage() {
                   contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid rgba(94,168,161,0.3)", borderRadius: 8, fontSize: 12, fontFamily: "var(--font-vazirmatn)" }}
                   formatter={(v: number, n: string) => [`${v} GB`, n]}
                 />
-                <Bar dataKey="nvme" stackId="a" fill="#1a4d8f" name="NVMe" />
-                <Bar dataKey="ssd"  stackId="a" fill="#16a34a" name="SSD"  />
-                <Bar dataKey="hdd"  stackId="a" fill="#9ca3af" name="HDD"  radius={[4, 4, 0, 0]} />
+                <Bar dataKey="nvme" stackId="a" fill="url(#barGrad1)" name="NVMe" />
+                <Bar dataKey="ssd"  stackId="a" fill="url(#barGrad2)" name="SSD"  />
+                <Bar dataKey="hdd"  stackId="a" fill="url(#barGrad3)" name="HDD"  radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
             <div className="flex items-center gap-16 mt-4 justify-end">

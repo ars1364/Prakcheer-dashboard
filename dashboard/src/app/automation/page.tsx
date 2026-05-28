@@ -53,12 +53,22 @@ export default function AutomationPage() {
         <div className="ltr-text h-[160px]" style={{ direction: "ltr" }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={RUN_HISTORY} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#16a34a" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+                </linearGradient>
+                <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#dc2626" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#dc2626" stopOpacity={0.55} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
               <XAxis dataKey="day" tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)", fill: "var(--color-text-muted)" }} />
               <YAxis tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)", fill: "var(--color-text-muted)" }} />
               <Tooltip contentStyle={{ background: "var(--color-glass)", border: "1px solid var(--color-border)", borderRadius: 8, fontSize: 11 }} />
-              <Bar dataKey="ok"   name="موفق"   fill="#16a34a" radius={[3,3,0,0]} />
-              <Bar dataKey="fail" name="خطا"    fill="#dc2626" radius={[3,3,0,0]} />
+              <Bar dataKey="ok"   name="موفق"   fill="url(#barGrad1)" radius={[3,3,0,0]} />
+              <Bar dataKey="fail" name="خطا"    fill="url(#barGrad2)" radius={[3,3,0,0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

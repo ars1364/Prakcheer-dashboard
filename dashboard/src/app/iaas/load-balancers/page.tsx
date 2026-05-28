@@ -251,13 +251,23 @@ export default function LoadBalancersPage() {
                 layout="vertical"
                 margin={{ top: 4, right: 40, left: 8, bottom: 0 }}
               >
+                <defs>
+                  <linearGradient id="barGradRps" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1a4d8f" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#1a4d8f" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGradP95" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
                 <XAxis type="number" tick={fontStyle} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="name" tick={{ ...fontStyle, fontFamily: "var(--font-vazirmatn)" }} axisLine={false} tickLine={false} width={80} />
                 <Tooltip contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 8, fontFamily: "var(--font-vazirmatn)", fontSize: 12 }}
                   formatter={(v, n) => [n === "rps" ? `${v} req/s` : `${v}ms`, n === "rps" ? "RPS" : "P95"]} />
-                <Bar dataKey="rps" fill="#1a4d8f" radius={[0, 4, 4, 0]} maxBarSize={14} name="rps" />
-                <Bar dataKey="p95" fill="#8b5cf6" radius={[0, 4, 4, 0]} maxBarSize={14} name="p95" />
+                <Bar dataKey="rps" fill="url(#barGradRps)" radius={[0, 4, 4, 0]} maxBarSize={14} name="rps" />
+                <Bar dataKey="p95" fill="url(#barGradP95)" radius={[0, 4, 4, 0]} maxBarSize={14} name="p95" />
               </BarChart>
             </ResponsiveContainer>
           </div>

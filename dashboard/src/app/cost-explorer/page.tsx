@@ -177,17 +177,43 @@ export default function CostExplorerPage() {
           <div className="ltr-text h-[210px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={MONTHLY_DATA} margin={{ top: 4, right: 8, left: -10, bottom: 0 }} barSize={20}>
+                <defs>
+                  <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#2554d8" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#2554d8" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad3" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#d97706" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#d97706" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad4" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#16a34a" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad5" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#ef4444" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#ef4444" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad6" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#06b6d4" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#06b6d4" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="month" tick={{ fontSize: 9, fontFamily: "var(--font-vazirmatn)" }} />
                 <YAxis tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} />
                 <Tooltip content={<ChartTooltip />} />
                 <Legend wrapperStyle={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} />
-                <Bar dataKey="compute"    name="Compute"    stackId="s" fill={CAT_COLOR.Compute}    />
-                <Bar dataKey="storage"    name="Storage"    stackId="s" fill={CAT_COLOR.Storage}    />
-                <Bar dataKey="network"    name="Network"    stackId="s" fill={CAT_COLOR.Network}    />
-                <Bar dataKey="db"         name="Database"   stackId="s" fill={CAT_COLOR.Database}   />
-                <Bar dataKey="cdn"        name="CDN"        stackId="s" fill={CAT_COLOR.CDN}        />
-                <Bar dataKey="k8s"        name="Kubernetes" stackId="s" fill={CAT_COLOR.Kubernetes} radius={[3,3,0,0]} />
+                <Bar dataKey="compute"    name="Compute"    stackId="s" fill="url(#barGrad1)" />
+                <Bar dataKey="storage"    name="Storage"    stackId="s" fill="url(#barGrad2)" />
+                <Bar dataKey="network"    name="Network"    stackId="s" fill="url(#barGrad3)" />
+                <Bar dataKey="db"         name="Database"   stackId="s" fill="url(#barGrad4)" />
+                <Bar dataKey="cdn"        name="CDN"        stackId="s" fill="url(#barGrad5)" />
+                <Bar dataKey="k8s"        name="Kubernetes" stackId="s" fill="url(#barGrad6)" radius={[3,3,0,0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

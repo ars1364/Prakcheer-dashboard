@@ -54,13 +54,27 @@ export default function RegionCapacityPage() {
           <div className="ltr-text" style={{ direction: "ltr" }}>
             <ResponsiveContainer width="100%" height={160}>
               <BarChart data={CHART_DATA} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#2554d8" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#2554d8" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad3" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#16a34a" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
                 <XAxis dataKey="name" tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} />
                 <YAxis tick={{ fontSize: 9 }} unit="%" />
                 <Tooltip content={<ChartTooltip />} />
-                <Bar dataKey="CPU"     fill="#2554d8" radius={[2,2,0,0]} maxBarSize={22} />
-                <Bar dataKey="RAM"     fill="#7c3aed" radius={[2,2,0,0]} maxBarSize={22} />
-                <Bar dataKey="Storage" fill="#16a34a" radius={[2,2,0,0]} maxBarSize={22} />
+                <Bar dataKey="CPU"     fill="url(#barGrad1)" radius={[2,2,0,0]} maxBarSize={22} />
+                <Bar dataKey="RAM"     fill="url(#barGrad2)" radius={[2,2,0,0]} maxBarSize={22} />
+                <Bar dataKey="Storage" fill="url(#barGrad3)" radius={[2,2,0,0]} maxBarSize={22} />
               </BarChart>
             </ResponsiveContainer>
           </div>

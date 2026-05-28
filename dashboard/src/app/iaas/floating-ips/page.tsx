@@ -238,15 +238,29 @@ export default function FloatingIPsPage() {
           <div className="h-[200px] ltr-text">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={REGION_ALLOC} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#22c55e" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#22c55e" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#94a3b8" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#94a3b8" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad3" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#f59e0b" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                 <XAxis dataKey="name" tick={fontStyle} axisLine={false} tickLine={false} />
                 <YAxis tick={fontStyle} axisLine={false} tickLine={false} />
                 <Tooltip
                   contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 8, ...fontStyle }}
                 />
-                <Bar dataKey="attached" name="متصل" stackId="a" fill="#22c55e" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="free" name="آزاد" stackId="a" fill="#94a3b8" />
-                <Bar dataKey="reserved" name="رزرو" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="attached" name="متصل" stackId="a" fill="url(#barGrad1)" radius={[0, 0, 0, 0]} />
+                <Bar dataKey="free" name="آزاد" stackId="a" fill="url(#barGrad2)" />
+                <Bar dataKey="reserved" name="رزرو" stackId="a" fill="url(#barGrad3)" radius={[4, 4, 0, 0]} />
                 <Legend wrapperStyle={{ ...fontStyle, paddingTop: 8 }} />
               </BarChart>
             </ResponsiveContainer>

@@ -70,13 +70,27 @@ export default function RegionHealthPage() {
         <div className="ltr-text" style={{ direction: "ltr" }}>
           <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={UPTIME_DATA} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="areaGrad1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#2554d8" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#2554d8" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="areaGrad2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#d97706" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#d97706" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="areaGrad3" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#16a34a" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
               <XAxis dataKey="day" tick={{ fontSize: 9 }} interval={4} />
               <YAxis domain={[99, 100]} tick={{ fontSize: 9 }} unit="%" />
               <Tooltip content={<ChartTooltip />} />
-              <Area type="monotone" dataKey="تهران-۱"  stroke="#2554d8" fill="none" strokeWidth={2} dot={false} />
-              <Area type="monotone" dataKey="اصفهان-۱" stroke="#d97706" fill="none" strokeWidth={2} dot={false} />
-              <Area type="monotone" dataKey="مشهد-۱"   stroke="#16a34a" fill="none" strokeWidth={2} dot={false} />
+              <Area type="monotone" dataKey="تهران-۱"  stroke="#2554d8" fill="url(#areaGrad1)" strokeWidth={2} dot={false} />
+              <Area type="monotone" dataKey="اصفهان-۱" stroke="#d97706" fill="url(#areaGrad2)" strokeWidth={2} dot={false} />
+              <Area type="monotone" dataKey="مشهد-۱"   stroke="#16a34a" fill="url(#areaGrad3)" strokeWidth={2} dot={false} />
             </AreaChart>
           </ResponsiveContainer>
         </div>

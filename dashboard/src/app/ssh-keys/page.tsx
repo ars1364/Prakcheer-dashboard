@@ -158,11 +158,17 @@ export default function SshKeysPage() {
           <div className="ltr-text h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={TOP_SERVERS} layout="vertical" margin={{ top: 0, right: 16, left: 140, bottom: 0 }} barSize={14}>
+                <defs>
+                  <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#2554d8" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#2554d8" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} width={140} />
                 <Tooltip content={<ChartTooltip />} />
-                <Bar dataKey="servers" name="سرورها" fill="#2554d8" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="servers" name="سرورها" fill="url(#barGrad)" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

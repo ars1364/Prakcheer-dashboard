@@ -147,6 +147,20 @@ export default function BillingPage() {
           <DashboardCard title="روند هزینه — ۶ ماه گذشته (هزار ریال)">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={MONTHLY_TREND} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1a4d8f" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#1a4d8f" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#16a34a" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad3" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#d97706" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#d97706" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(94,168,161,0.15)" vertical={false} />
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#3d5957", fontFamily: "var(--font-vazirmatn)" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#3d5957" }} axisLine={false} tickLine={false} />
@@ -157,9 +171,9 @@ export default function BillingPage() {
                     return [`${val}K ریال`, labels[name] ?? name];
                   }}
                 />
-                <Bar dataKey="compute"  stackId="a" fill="#1a4d8f" name="compute"   />
-                <Bar dataKey="bandwidth" stackId="a" fill="#16a34a" name="bandwidth" />
-                <Bar dataKey="storage"  stackId="a" fill="#d97706" name="storage"   radius={[4, 4, 0, 0]} />
+                <Bar dataKey="compute"  stackId="a" fill="url(#barGrad1)" name="compute"   />
+                <Bar dataKey="bandwidth" stackId="a" fill="url(#barGrad2)" name="bandwidth" />
+                <Bar dataKey="storage"  stackId="a" fill="url(#barGrad3)" name="storage"   radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
             <div className="flex items-center gap-16 mt-4 justify-end">

@@ -146,6 +146,16 @@ export default function ServersPage() {
         <DashboardCard title="مصرف CPU و RAM سرورهای فعال">
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={cpuChartData} layout="vertical" margin={{ top: 0, right: 16, left: 8, bottom: 0 }}>
+              <defs>
+                <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#1a4d8f" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#1a4d8f" stopOpacity={0.55} />
+                </linearGradient>
+                <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#16a34a" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(94,168,161,0.15)" horizontal={false} />
               <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11, fill: "#3d5957" }} axisLine={false} tickLine={false} unit="%" />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "#3d5957", fontFamily: "var(--font-vazirmatn)" }} axisLine={false} tickLine={false} width={90} />
@@ -153,8 +163,8 @@ export default function ServersPage() {
                 contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid rgba(94,168,161,0.3)", borderRadius: 8, fontSize: 12 }}
                 formatter={(val: number, name: string) => [`${val}%`, name === "cpu" ? "CPU" : "RAM"]}
               />
-              <Bar dataKey="cpu" fill="#1a4d8f" radius={[0, 4, 4, 0]} maxBarSize={12} name="cpu" />
-              <Bar dataKey="ram" fill="#16a34a" radius={[0, 4, 4, 0]} maxBarSize={12} name="ram" />
+              <Bar dataKey="cpu" fill="url(#barGrad1)" radius={[0, 4, 4, 0]} maxBarSize={12} name="cpu" />
+              <Bar dataKey="ram" fill="url(#barGrad2)" radius={[0, 4, 4, 0]} maxBarSize={12} name="ram" />
             </BarChart>
           </ResponsiveContainer>
           <div className="flex items-center gap-16 mt-4 justify-end">

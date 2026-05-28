@@ -189,13 +189,23 @@ export default function BackupPage() {
           <div className="ltr-text h-[190px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={DAILY_STATS} margin={{ top: 4, right: 8, left: -10, bottom: 0 }} barSize={20}>
+                <defs>
+                  <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#16a34a" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#ef4444" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#ef4444" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="d" tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} />
                 <YAxis tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} allowDecimals={false} />
                 <Tooltip content={<ChartTooltip />} />
                 <Legend wrapperStyle={{ fontSize: 11, fontFamily: "var(--font-vazirmatn)" }} />
-                <Bar dataKey="success" name="موفق"  stackId="a" fill="#16a34a" />
-                <Bar dataKey="failed"  name="ناموفق" stackId="a" fill="#ef4444" radius={[3,3,0,0]} />
+                <Bar dataKey="success" name="موفق"  stackId="a" fill="url(#barGrad1)" />
+                <Bar dataKey="failed"  name="ناموفق" stackId="a" fill="url(#barGrad2)" radius={[3,3,0,0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -70,12 +70,22 @@ export default function BillingReportsPage() {
         <div className="ltr-text" style={{ direction: "ltr" }}>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={MONTHLY} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#16a34a" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+                </linearGradient>
+                <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#dc2626" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#dc2626" stopOpacity={0.55} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
               <XAxis dataKey="month" tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} />
               <YAxis tick={{ fontSize: 9 }} />
               <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="revenue" name="درآمد" fill="#16a34a" radius={[2,2,0,0]} maxBarSize={28} />
-              <Bar dataKey="cost"    name="هزینه" fill="#dc2626" radius={[2,2,0,0]} maxBarSize={28} />
+              <Bar dataKey="revenue" name="درآمد" fill="url(#barGrad1)" radius={[2,2,0,0]} maxBarSize={28} />
+              <Bar dataKey="cost"    name="هزینه" fill="url(#barGrad2)" radius={[2,2,0,0]} maxBarSize={28} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -66,13 +66,27 @@ export default function QueueStatusPage() {
         <div className="ltr-text" style={{ direction: "ltr" }}>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={THROUGHPUT} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#2554d8" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#2554d8" stopOpacity={0.55} />
+                </linearGradient>
+                <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#16a34a" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#16a34a" stopOpacity={0.55} />
+                </linearGradient>
+                <linearGradient id="barGrad3" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#7c3aed" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="#7c3aed" stopOpacity={0.55} />
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
               <XAxis dataKey="h"      tick={{ fontSize: 9 }} />
               <YAxis tick={{ fontSize: 9 }} />
               <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="compute" fill="#2554d8" stackId="a" maxBarSize={24} />
-              <Bar dataKey="storage" fill="#16a34a" stackId="a" maxBarSize={24} />
-              <Bar dataKey="network" fill="#7c3aed" stackId="a" maxBarSize={24} radius={[2,2,0,0]} />
+              <Bar dataKey="compute" fill="url(#barGrad1)" stackId="a" maxBarSize={24} />
+              <Bar dataKey="storage" fill="url(#barGrad2)" stackId="a" maxBarSize={24} />
+              <Bar dataKey="network" fill="url(#barGrad3)" stackId="a" maxBarSize={24} radius={[2,2,0,0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

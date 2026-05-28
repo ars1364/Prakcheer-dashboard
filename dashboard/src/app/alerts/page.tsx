@@ -186,14 +186,28 @@ export default function AlertsPage() {
           <div className="ltr-text h-[190px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={HOURLY_FIRES} margin={{ top: 4, right: 8, left: -10, bottom: 0 }} barSize={12}>
+                <defs>
+                  <linearGradient id="barGrad1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#ef4444" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#ef4444" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#d97706" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#d97706" stopOpacity={0.55} />
+                  </linearGradient>
+                  <linearGradient id="barGrad3" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#2554d8" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#2554d8" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="h" tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} />
                 <YAxis tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} allowDecimals={false} />
                 <Tooltip content={<ChartTooltip />} />
                 <Legend wrapperStyle={{ fontSize: 11, fontFamily: "var(--font-vazirmatn)" }} />
-                <Bar dataKey="critical" name="بحرانی" stackId="a" fill="#ef4444" />
-                <Bar dataKey="warning"  name="هشدار"  stackId="a" fill="#d97706" />
-                <Bar dataKey="info"     name="اطلاع"  stackId="a" fill="#2554d8" radius={[3,3,0,0]} />
+                <Bar dataKey="critical" name="بحرانی" stackId="a" fill="url(#barGrad1)" />
+                <Bar dataKey="warning"  name="هشدار"  stackId="a" fill="url(#barGrad2)" />
+                <Bar dataKey="info"     name="اطلاع"  stackId="a" fill="url(#barGrad3)" radius={[3,3,0,0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -205,11 +219,17 @@ export default function AlertsPage() {
           <div className="ltr-text h-[190px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={RULE_FIRES_7D} layout="vertical" margin={{ top: 0, right: 16, left: 110, bottom: 0 }} barSize={14}>
+                <defs>
+                  <linearGradient id="barGrad4" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#d97706" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#d97706" stopOpacity={0.55} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} allowDecimals={false} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fontFamily: "var(--font-vazirmatn)" }} width={110} />
                 <Tooltip content={<ChartTooltip />} />
-                <Bar dataKey="fires" name="بار فعال" fill="#d97706" radius={[0,4,4,0]} />
+                <Bar dataKey="fires" name="بار فعال" fill="url(#barGrad4)" radius={[0,4,4,0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
