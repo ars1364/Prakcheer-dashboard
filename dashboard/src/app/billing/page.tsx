@@ -7,7 +7,6 @@ import {
 } from "recharts";
 import DashboardShell from "@/components/layout/DashboardShell";
 import DashboardCard from "@/components/ui/DashboardCard";
-import MetricCard from "@/components/ui/MetricCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 
 const REGIONS = [
@@ -108,12 +107,38 @@ export default function BillingPage() {
       selectedRegion={region}
       onRegionChange={setRegion}
     >
-      {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-16">
-        <MetricCard icon="◈" label="هزینه این ماه"    value={billing.total}         trend="down"    trendValue="6%"   context="ریال — نسبت به ماه قبل" />
-        <MetricCard icon="✓" label="فاکتورهای پرداخت" value={String(kpis.ytdCount)} trend="neutral" trendValue="کل"  context="در سال جاری"              />
-        <MetricCard icon="◷" label="در انتظار پرداخت" value={String(kpis.pending)}  trend="down"    trendValue="نیاز به پرداخت" context="فاکتور معلق"  />
-        <MetricCard icon="⊕" label="اعتبار باقی‌مانده" value={kpis.credit}          trend="neutral" trendValue="موجودی" context="ریال"                 />
+      {/* Spend summary header */}
+      <div className="glass rounded-16 px-20 py-18 mb-4">
+        <div className="flex flex-wrap gap-24 items-start">
+          <div>
+            <p className="text-[12px] text-text-muted mb-6">هزینه این ماه</p>
+            <p className="text-[36px] font-bold text-text-main ltr-text leading-none">{billing.total}</p>
+            <p className="text-[13px] text-text-muted mt-4">ریال</p>
+            <div className="flex items-center gap-6 mt-6">
+              <span className="text-[13px] font-medium text-success">↓ 6٪</span>
+              <span className="text-[12px] text-text-muted">نسبت به ماه قبل</span>
+            </div>
+          </div>
+          <div className="flex-1 min-w-[200px] max-w-[360px]">
+            <p className="text-[12px] text-text-muted mb-10">ترکیب هزینه ماه جاری</p>
+            {billing.rows.map(row => (
+              <div key={row.label} className="flex items-center gap-10 mb-10">
+                <span className="text-[12px] text-text-muted w-[92px] shrink-0">{row.label}</span>
+                <div className="flex-1 h-[8px] rounded-full bg-border overflow-hidden">
+                  <div className="h-full rounded-full transition-all" style={{ width: `${row.pct}%`, background: row.color }} />
+                </div>
+                <span className="ltr-text text-[12px] font-medium text-text-main w-[32px] text-end">{row.pct}٪</span>
+              </div>
+            ))}
+          </div>
+          <div className="rounded-14 px-18 py-14 border border-brand/20 flex flex-col items-center"
+               style={{ background: "rgba(26,77,143,0.06)" }}>
+            <p className="text-[11px] text-text-muted mb-4">اعتبار کیف پول</p>
+            <p className="text-[22px] font-bold text-brand ltr-text">۵٬۰۰۰٬۰۰۰</p>
+            <p className="text-[11px] text-text-muted mb-10">ریال</p>
+            <button className="px-14 py-6 rounded-8 bg-brand text-white text-[12px] font-medium hover:bg-brand-hover transition-colors">شارژ</button>
+          </div>
+        </div>
       </div>
 
       {/* Spending trend chart + Donut breakdown */}

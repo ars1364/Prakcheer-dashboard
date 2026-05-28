@@ -6,7 +6,6 @@ import {
   ResponsiveContainer, CartesianGrid
 } from "recharts";
 import DashboardShell from "@/components/layout/DashboardShell";
-import MetricCard from "@/components/ui/MetricCard";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ResourceBar from "@/components/ui/ResourceBar";
@@ -170,12 +169,40 @@ export default function DashboardPage() {
       {/* Status strip */}
       <StatusStrip status={svcStatus.status} alertCount={alerts.length} lastUpdated={svcStatus.lastUpdated} />
 
-      {/* KPI metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-16">
-        <MetricCard icon="▣" label="سرورهای فعال"  value={kpis.activeServers} trend="up"               trendValue="2 این ماه" context={kpis.activeServersContext} />
-        <MetricCard icon="⚡" label="مصرف CPU"      value={kpis.cpu}           trend={kpis.cpuTrend}     trendValue="میانگین"   context={kpis.cpuContext}          />
-        <MetricCard icon="⇅" label="ترافیک شبکه"  value={kpis.traffic}       trend={kpis.trafficTrend} trendValue="14%"       context="این ماه"                  />
-        <MetricCard icon="◈" label="هزینه این ماه" value={kpis.billing}       trend={kpis.billingTrend} trendValue="6%"        context="ریال — نسبت به ماه قبل"  />
+      {/* Resource quota panel */}
+      <div className="glass rounded-16 px-20 py-16">
+        <p className="text-[12px] text-text-muted mb-12">استفاده از منابع</p>
+        <div className="flex flex-col gap-10 mb-14">
+          {[
+            { label: "سرورها",       used: resources.usedSrv,  total: resources.totalSrv,  pct: resources.srvPct,  color: "#1a4d8f" },
+            { label: "IP شناور",    used: resources.usedIp,   total: resources.totalIp,   pct: resources.ipPct,   color: "#8b5cf6" },
+            { label: "ذخیره‌سازی", used: resources.usedDisk, total: resources.totalDisk, pct: resources.diskPct, color: "#16a34a" },
+          ].map(r => (
+            <div key={r.label} className="flex items-center gap-10">
+              <span className="text-[12px] text-text-muted w-[80px] shrink-0">{r.label}</span>
+              <div className="flex-1 h-[10px] rounded-full bg-border overflow-hidden">
+                <div className="h-full rounded-full transition-all"
+                     style={{ width: `${r.pct}%`, background: r.pct > 75 ? "#ef4444" : r.pct > 50 ? "#f59e0b" : r.color }} />
+              </div>
+              <span className="ltr-text text-[12px] text-text-muted w-[90px] text-end">{r.used} / {r.total}</span>
+              <span className="ltr-text text-[12px] font-semibold text-text-main w-[34px] text-end">{r.pct}٪</span>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-10">
+          {[
+            { label: "سرورهای فعال", value: kpis.activeServers, sub: kpis.activeServersContext, color: "#1a4d8f", bg: "rgba(26,77,143,0.08)"  },
+            { label: "میانگین CPU",  value: kpis.cpu,            sub: kpis.cpuContext,           color: "#8b5cf6", bg: "rgba(139,92,246,0.08)" },
+            { label: "ترافیک",       value: kpis.traffic,        sub: "این ماه",                 color: "#16a34a", bg: "rgba(22,163,74,0.08)"  },
+            { label: "هزینه ماه",    value: kpis.billing,        sub: "هزار ریال",               color: "#d97706", bg: "rgba(217,119,6,0.08)"  },
+          ].map(item => (
+            <div key={item.label} className="rounded-12 px-14 py-10 flex flex-col gap-4" style={{ background: item.bg }}>
+              <span className="text-[18px] font-bold ltr-text" style={{ color: item.color }}>{item.value}</span>
+              <span className="text-[11px] font-medium text-text-main">{item.label}</span>
+              <span className="text-[10px] text-text-muted">{item.sub}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Resource trend chart + Service health */}

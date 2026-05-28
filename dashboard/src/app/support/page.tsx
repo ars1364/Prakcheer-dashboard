@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import DashboardShell from "@/components/layout/DashboardShell";
-import MetricCard from "@/components/ui/MetricCard";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 
@@ -121,12 +120,29 @@ export default function SupportPage() {
       selectedRegion={region}
       onRegionChange={setRegion}
     >
-      {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
-        <MetricCard icon="🎫" label="کل تیکت‌ها"      value={String(kpis.total)}    />
-        <MetricCard icon="🔓" label="باز / در بررسی"  value={String(kpis.open)}     />
-        <MetricCard icon="🚨" label="بحرانی"           value={String(kpis.critical)} />
-        <MetricCard icon="✅" label="حل‌شده"           value={String(kpis.resolved)} />
+      {/* Ticket health header */}
+      <div className="glass rounded-16 px-20 py-16 mb-4">
+        <div className="flex flex-wrap gap-8 mb-14">
+          <p className="text-[12px] text-text-muted w-full mb-2">نقشه اولویت تیکت‌ها</p>
+          {byRegion.map(t => (
+            <div key={t.id} className="w-18 h-18 rounded-4 cursor-default"
+              title={`${t.id}: ${t.title}`}
+              style={{ background: t.priority === "critical" ? "#ef4444" : t.priority === "high" ? "#f59e0b" : t.priority === "medium" ? "#3b82f6" : "#22c55e" }} />
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-10">
+          {[
+            { label: "کل تیکت‌ها", count: kpis.total,    color: "#1a4d8f", bg: "rgba(26,77,143,0.08)"  },
+            { label: "باز / بررسی", count: kpis.open,     color: "#f59e0b", bg: "rgba(245,158,11,0.08)" },
+            { label: "بحرانی",      count: kpis.critical, color: "#ef4444", bg: "rgba(239,68,68,0.08)"  },
+            { label: "حل‌شده",      count: kpis.resolved, color: "#22c55e", bg: "rgba(34,197,94,0.08)"  },
+          ].map(item => (
+            <div key={item.label} className="flex items-center gap-10 flex-1 min-w-[110px] rounded-12 px-14 py-10" style={{ background: item.bg }}>
+              <span className="text-[26px] font-bold ltr-text" style={{ color: item.color }}>{item.count}</span>
+              <span className="text-[12px] text-text-muted">{item.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Ticket volume chart + SLA gauge + Priority distribution */}

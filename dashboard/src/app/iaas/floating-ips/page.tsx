@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import DashboardShell from "@/components/layout/DashboardShell";
-import MetricCard from "@/components/ui/MetricCard";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
@@ -140,12 +139,32 @@ export default function FloatingIPsPage() {
       selectedRegion={region}
       onRegionChange={setRegion}
     >
-      {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
-        <MetricCard icon="🌐" label="کل IP شناور" value={String(kpis.total)} />
-        <MetricCard icon="🔗" label="متصل" value={String(kpis.attached)} />
-        <MetricCard icon="◎" label="آزاد" value={String(kpis.free)} />
-        <MetricCard icon="📌" label="رزرو شده" value={String(kpis.reserved)} />
+      {/* IP allocation header */}
+      <div className="glass rounded-16 px-20 py-16 mb-4">
+        <div className="flex items-center justify-between mb-10">
+          <span className="text-[13px] font-medium text-text-muted">تخصیص IP شناور</span>
+          <span className="ltr-text text-[14px] font-bold text-text-main">
+            {kpis.attached} <span className="text-text-muted font-normal text-[13px]">از</span> {kpis.total} IP متصل
+          </span>
+        </div>
+        <div className="flex h-12 rounded-full overflow-hidden gap-[2px] mb-14">
+          {kpis.attached > 0 && <div style={{ flex: kpis.attached, background: "#22c55e" }} title="متصل" />}
+          {kpis.free > 0     && <div style={{ flex: kpis.free,     background: "#94a3b8" }} title="آزاد" />}
+          {kpis.reserved > 0 && <div style={{ flex: kpis.reserved, background: "#f59e0b" }} title="رزرو" />}
+        </div>
+        <div className="flex flex-wrap gap-10">
+          {[
+            { label: "متصل",   count: kpis.attached, color: "#22c55e", bg: "rgba(34,197,94,0.08)"   },
+            { label: "آزاد",   count: kpis.free,     color: "#94a3b8", bg: "rgba(148,163,184,0.1)"  },
+            { label: "رزرو",   count: kpis.reserved, color: "#f59e0b", bg: "rgba(245,158,11,0.08)"  },
+            { label: "کل",     count: kpis.total,    color: "#1a4d8f", bg: "rgba(26,77,143,0.08)"   },
+          ].map(item => (
+            <div key={item.label} className="flex items-center gap-10 flex-1 min-w-[100px] rounded-12 px-14 py-10" style={{ background: item.bg }}>
+              <span className="text-[26px] font-bold ltr-text" style={{ color: item.color }}>{item.count}</span>
+              <span className="text-[12px] text-text-muted">{item.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Charts row */}

@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import DashboardShell from "@/components/layout/DashboardShell";
 import DashboardCard from "@/components/ui/DashboardCard";
-import MetricCard from "@/components/ui/MetricCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
 import EmptyState from "@/components/ui/EmptyState";
@@ -132,12 +131,51 @@ export default function FirewallPage() {
       selectedRegion={region}
       onRegionChange={setRegion}
     >
-      {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-16">
-        <MetricCard icon="⬡" label="کل قوانین"  value={String(kpis.total)}    trend="neutral" trendValue="قانون"   context="فعال و غیرفعال" />
-        <MetricCard icon="↓" label="ورودی"       value={String(kpis.inbound)}  trend="neutral" trendValue="inbound"  context="قوانین ورودی"   />
-        <MetricCard icon="↑" label="خروجی"       value={String(kpis.outbound)} trend="neutral" trendValue="outbound" context="قوانین خروجی"   />
-        <MetricCard icon="✕" label="مسدودسازی"  value={String(kpis.denied)}   trend={kpis.denied > 0 ? "down" : "neutral"} trendValue="deny" context="قوانین مسدود" />
+      {/* Threat defense header */}
+      <div className="glass rounded-16 px-20 py-16 mb-4">
+        <div className="flex flex-wrap gap-16 items-center">
+          <div className="rounded-14 px-20 py-14 flex flex-col items-center min-w-[130px]"
+               style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
+            <p className="text-[11px] text-text-muted mb-4">بلاک شده امروز</p>
+            <p className="text-[36px] font-bold ltr-text leading-none" style={{ color: "#ef4444" }}>
+              {deniedHits >= 1000 ? `${(deniedHits / 1000).toFixed(1)}K` : deniedHits}
+            </p>
+            <p className="text-[11px] text-text-muted mt-4">درخواست رد شده</p>
+          </div>
+          <div className="flex-1 min-w-[200px]">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-[12px] text-text-muted">نسبت مجاز به مسدود</span>
+              <span className="ltr-text text-[12px] text-text-muted">{totalHits >= 1000 ? `${(totalHits / 1000).toFixed(1)}K` : totalHits} کل</span>
+            </div>
+            <div className="flex h-[14px] rounded-full overflow-hidden">
+              <div style={{ width: `${totalHits > 0 ? Math.round((allowedHits / totalHits) * 100) : 0}%`, background: "#22c55e" }} />
+              <div style={{ width: `${totalHits > 0 ? Math.round((deniedHits / totalHits) * 100) : 0}%`, background: "#ef4444" }} />
+            </div>
+            <div className="flex items-center justify-between mt-6">
+              <div className="flex items-center gap-4">
+                <div className="w-8 h-8 rounded-full" style={{ background: "#22c55e" }} />
+                <span className="text-[12px] text-text-muted">مجاز: {allowedHits >= 1000 ? `${(allowedHits / 1000).toFixed(1)}K` : allowedHits}</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-8 h-8 rounded-full" style={{ background: "#ef4444" }} />
+                <span className="text-[12px] text-text-muted">مسدود: {deniedHits >= 1000 ? `${(deniedHits / 1000).toFixed(1)}K` : deniedHits}</span>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-8">
+            {[
+              { label: "کل قوانین", count: kpis.total,    color: "#1a4d8f", bg: "rgba(26,77,143,0.08)"  },
+              { label: "مسدودساز", count: kpis.denied,   color: "#ef4444", bg: "rgba(239,68,68,0.08)"  },
+              { label: "ورودی",     count: kpis.inbound,  color: "#8b5cf6", bg: "rgba(139,92,246,0.08)" },
+              { label: "خروجی",     count: kpis.outbound, color: "#22c55e", bg: "rgba(34,197,94,0.08)"  },
+            ].map(item => (
+              <div key={item.label} className="flex flex-col items-center py-8 px-12 rounded-10" style={{ background: item.bg }}>
+                <span className="text-[18px] font-bold ltr-text" style={{ color: item.color }}>{item.count}</span>
+                <span className="text-[11px] text-text-muted text-center mt-1">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Traffic flow + Top rules */}

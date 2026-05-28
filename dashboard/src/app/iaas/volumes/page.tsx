@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import DashboardShell from "@/components/layout/DashboardShell";
-import MetricCard from "@/components/ui/MetricCard";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
@@ -127,12 +126,46 @@ export default function VolumesPage() {
       selectedRegion={region}
       onRegionChange={setRegion}
     >
-      {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
-        <MetricCard icon="💾" label="کل دیسک‌ها"      value={String(kpis.total)}                    />
-        <MetricCard icon="📦" label="فضای کل (GB)"    value={kpis.totalGB.toLocaleString("fa-IR")} />
-        <MetricCard icon="🔗" label="متصل"             value={String(kpis.attached)}                 />
-        <MetricCard icon="◎" label="آزاد"              value={String(kpis.available)}                />
+      {/* Storage capacity header */}
+      <div className="glass rounded-16 px-20 py-16 mb-4">
+        <div className="flex items-center justify-between mb-10">
+          <span className="text-[13px] font-medium text-text-muted">ظرفیت ذخیره‌سازی</span>
+          <span className="ltr-text text-[13px] font-semibold text-text-main">{kpis.totalGB.toLocaleString("fa-IR")} GB مجموع</span>
+        </div>
+        <div className="flex h-12 rounded-full overflow-hidden gap-[2px] mb-12">
+          {(["NVMe", "SSD", "HDD"] as VolumeType[]).map(t => {
+            const gb = byRegion.filter(v => v.type === t).reduce((s, v) => s + v.size, 0);
+            return gb > 0 ? (
+              <div key={t} className="transition-all" title={`${t}: ${gb} GB`}
+                   style={{ flex: gb, background: TYPE_COLOR[t] }} />
+            ) : null;
+          })}
+        </div>
+        <div className="flex items-center flex-wrap gap-16 mb-14">
+          {(["NVMe", "SSD", "HDD"] as VolumeType[]).map(t => {
+            const gb = byRegion.filter(v => v.type === t).reduce((s, v) => s + v.size, 0);
+            return gb > 0 ? (
+              <div key={t} className="flex items-center gap-6">
+                <div className="w-10 h-10 rounded-2" style={{ background: TYPE_COLOR[t] }} />
+                <span className="text-[12px] text-text-muted">{t}</span>
+                <span className="ltr-text text-[12px] font-semibold text-text-main">{gb} GB</span>
+              </div>
+            ) : null;
+          })}
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-10">
+          {[
+            { label: "کل دیسک‌ها", count: kpis.total,     color: "#1a4d8f", bg: "rgba(26,77,143,0.08)"  },
+            { label: "متصل",        count: kpis.attached,  color: "#22c55e", bg: "rgba(34,197,94,0.08)"  },
+            { label: "آزاد",        count: kpis.available, color: "#94a3b8", bg: "rgba(148,163,184,0.1)" },
+            { label: "خطا / ساخت",  count: byRegion.filter(v => v.status === "error" || v.status === "creating").length, color: "#f59e0b", bg: "rgba(245,158,11,0.08)" },
+          ].map(item => (
+            <div key={item.label} className="flex flex-col items-center py-10 px-6 rounded-12" style={{ background: item.bg }}>
+              <span className="text-[22px] font-bold ltr-text" style={{ color: item.color }}>{item.count}</span>
+              <span className="text-[11px] text-text-muted text-center mt-2">{item.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Type donut + Region storage chart */}

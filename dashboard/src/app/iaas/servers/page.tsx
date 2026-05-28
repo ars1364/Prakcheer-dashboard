@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import DashboardShell from "@/components/layout/DashboardShell";
 import DashboardCard from "@/components/ui/DashboardCard";
-import MetricCard from "@/components/ui/MetricCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
 import EmptyState from "@/components/ui/EmptyState";
@@ -115,12 +114,31 @@ export default function ServersPage() {
       selectedRegion={region}
       onRegionChange={(r) => { setRegion(r); setSearch(""); setStatus("all"); }}
     >
-      {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-16">
-        <MetricCard icon="▣" label="جمع سرورها"   value={String(kpis.total)}    trend="neutral" trendValue="کل"   context="در این منطقه"        />
-        <MetricCard icon="⬤" label="در حال اجرا"  value={String(kpis.running)}  trend="up"      trendValue="فعال" context="آماده سرویس‌دهی"      />
-        <MetricCard icon="⚠" label="متوقف / خطا"  value={String(kpis.problems)} trend={kpis.problems > 0 ? "down" : "neutral"} trendValue={kpis.problems > 0 ? "نیاز به بررسی" : "سالم"} context="توجه لازم" />
-        <MetricCard icon="↺" label="در حال ساخت"  value={String(kpis.building)} trend="neutral" trendValue="صف"   context="در انتظار آماده‌سازی" />
+      {/* Fleet status bar */}
+      <div className="glass rounded-16 px-20 py-16 mb-4">
+        <div className="flex items-center justify-between mb-10">
+          <span className="text-[13px] font-medium text-text-muted">وضعیت ناوگان سرورها</span>
+          <span className="ltr-text text-[13px] font-semibold text-text-main">{kpis.total} سرور</span>
+        </div>
+        <div className="flex h-10 rounded-full overflow-hidden gap-[2px] mb-16">
+          {byRegion.map(s => (
+            <div key={s.id} className="flex-1" title={s.name}
+              style={{ background: s.status === "running" ? "#22c55e" : s.status === "building" ? "#3b82f6" : s.status === "error" ? "#ef4444" : "#94a3b8" }} />
+          ))}
+        </div>
+        <div className="grid grid-cols-4 gap-10">
+          {[
+            { label: "در حال اجرا", count: kpis.running, color: "#22c55e", bg: "rgba(34,197,94,0.08)" },
+            { label: "متوقف", count: byRegion.filter(s => s.status === "stopped").length, color: "#94a3b8", bg: "rgba(148,163,184,0.1)" },
+            { label: "خطا", count: byRegion.filter(s => s.status === "error").length, color: "#ef4444", bg: "rgba(239,68,68,0.08)" },
+            { label: "در حال ساخت", count: kpis.building, color: "#3b82f6", bg: "rgba(59,130,246,0.08)" },
+          ].map(item => (
+            <div key={item.label} className="flex flex-col items-center py-10 px-6 rounded-12" style={{ background: item.bg }}>
+              <span className="text-[24px] font-bold ltr-text" style={{ color: item.color }}>{item.count}</span>
+              <span className="text-[11px] text-text-muted text-center mt-2">{item.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* CPU/RAM usage chart */}
