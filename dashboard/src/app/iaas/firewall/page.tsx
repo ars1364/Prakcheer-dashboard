@@ -7,8 +7,6 @@ import MetricCard from "@/components/ui/MetricCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
 import EmptyState from "@/components/ui/EmptyState";
-import ErrorState from "@/components/ui/ErrorState";
-import { MetricCardSkeleton, TableSkeleton } from "@/components/ui/LoadingSkeleton";
 
 const REGIONS = [
   { id: "all",     label: "همه مناطق" },
@@ -17,8 +15,8 @@ const REGIONS = [
   { id: "mashhad", label: "مشهد"      },
 ];
 
-type Direction = "inbound" | "outbound";
-type Protocol  = "TCP" | "UDP" | "ICMP" | "Any";
+type Direction  = "inbound" | "outbound";
+type Protocol   = "TCP" | "UDP" | "ICMP" | "Any";
 type RuleAction = "allow" | "deny";
 type RuleStatus = "active" | "inactive";
 
@@ -26,64 +24,85 @@ type FirewallRule = {
   id: string; name: string; region: string;
   direction: Direction; protocol: Protocol;
   portRange: string; source: string; destination: string;
-  action: RuleAction; status: RuleStatus; priority: number;
-  createdAt: string;
+  action: RuleAction; status: RuleStatus; priority: number; createdAt: string;
+  hits: number; // mock traffic hits today
 };
 
 const ALL_RULES: FirewallRule[] = [
-  { id: "fw-01", name: "allow-http",       region: "tehran",  direction: "inbound",  protocol: "TCP",  portRange: "80",       source: "0.0.0.0/0",      destination: "185.94.97.211", action: "allow", status: "active",   priority: 100, createdAt: "۱۴۰۲/۱۲/۰۱" },
-  { id: "fw-02", name: "allow-https",      region: "tehran",  direction: "inbound",  protocol: "TCP",  portRange: "443",      source: "0.0.0.0/0",      destination: "185.94.97.211", action: "allow", status: "active",   priority: 110, createdAt: "۱۴۰۲/۱۲/۰۱" },
-  { id: "fw-03", name: "allow-ssh-vpn",    region: "tehran",  direction: "inbound",  protocol: "TCP",  portRange: "22",       source: "10.0.0.0/8",     destination: "any",           action: "allow", status: "active",   priority: 120, createdAt: "۱۴۰۲/۱۲/۰۳" },
-  { id: "fw-04", name: "allow-db-internal",region: "tehran",  direction: "inbound",  protocol: "TCP",  portRange: "5432",     source: "192.168.1.0/24", destination: "185.94.97.213", action: "allow", status: "active",   priority: 130, createdAt: "۱۴۰۲/۱۲/۰۵" },
-  { id: "fw-05", name: "block-telnet",     region: "tehran",  direction: "inbound",  protocol: "TCP",  portRange: "23",       source: "0.0.0.0/0",      destination: "any",           action: "deny",  status: "active",   priority: 200, createdAt: "۱۴۰۲/۱۲/۱۰" },
-  { id: "fw-06", name: "allow-outbound",   region: "tehran",  direction: "outbound", protocol: "Any",  portRange: "any",      source: "any",            destination: "0.0.0.0/0",    action: "allow", status: "active",   priority: 900, createdAt: "۱۴۰۲/۱۲/۰۱" },
-  { id: "fw-07", name: "allow-icmp",       region: "tehran",  direction: "inbound",  protocol: "ICMP", portRange: "—",        source: "0.0.0.0/0",      destination: "any",           action: "allow", status: "inactive", priority: 150, createdAt: "۱۴۰۳/۰۱/۰۵" },
-  { id: "fw-08", name: "allow-http-isf",   region: "isfahan", direction: "inbound",  protocol: "TCP",  portRange: "80,443",   source: "0.0.0.0/0",      destination: "192.168.10.51", action: "allow", status: "active",   priority: 100, createdAt: "۱۴۰۳/۰۲/۰۵" },
-  { id: "fw-09", name: "block-rdp-isf",    region: "isfahan", direction: "inbound",  protocol: "TCP",  portRange: "3389",     source: "0.0.0.0/0",      destination: "any",           action: "deny",  status: "active",   priority: 210, createdAt: "۱۴۰۳/۰۲/۱۰" },
-  { id: "fw-10", name: "allow-ssh-isf",    region: "isfahan", direction: "inbound",  protocol: "TCP",  portRange: "22",       source: "10.0.0.0/8",     destination: "any",           action: "allow", status: "active",   priority: 120, createdAt: "۱۴۰۳/۰۲/۰۵" },
-  { id: "fw-11", name: "allow-http-msh",   region: "mashhad", direction: "inbound",  protocol: "TCP",  portRange: "80,443",   source: "0.0.0.0/0",      destination: "10.20.30.102",  action: "allow", status: "active",   priority: 100, createdAt: "۱۴۰۳/۰۱/۲۰" },
-  { id: "fw-12", name: "allow-db-msh",     region: "mashhad", direction: "inbound",  protocol: "TCP",  portRange: "5432",     source: "10.1.0.0/24",    destination: "10.20.30.101",  action: "allow", status: "active",   priority: 130, createdAt: "۱۴۰۳/۰۱/۲۵" },
+  { id: "fw-01", name: "allow-http",        region: "tehran",  direction: "inbound",  protocol: "TCP",  portRange: "80",     source: "0.0.0.0/0",      destination: "185.94.97.211", action: "allow", status: "active",   priority: 100, createdAt: "۱۴۰۲/۱۲/۰۱", hits: 14820 },
+  { id: "fw-02", name: "allow-https",       region: "tehran",  direction: "inbound",  protocol: "TCP",  portRange: "443",    source: "0.0.0.0/0",      destination: "185.94.97.211", action: "allow", status: "active",   priority: 110, createdAt: "۱۴۰۲/۱۲/۰۱", hits: 32100 },
+  { id: "fw-03", name: "allow-ssh-vpn",     region: "tehran",  direction: "inbound",  protocol: "TCP",  portRange: "22",     source: "10.0.0.0/8",     destination: "any",           action: "allow", status: "active",   priority: 120, createdAt: "۱۴۰۲/۱۲/۰۳", hits: 248   },
+  { id: "fw-04", name: "allow-db-internal", region: "tehran",  direction: "inbound",  protocol: "TCP",  portRange: "5432",   source: "192.168.1.0/24", destination: "185.94.97.213", action: "allow", status: "active",   priority: 130, createdAt: "۱۴۰۲/۱۲/۰۵", hits: 5620  },
+  { id: "fw-05", name: "block-telnet",      region: "tehran",  direction: "inbound",  protocol: "TCP",  portRange: "23",     source: "0.0.0.0/0",      destination: "any",           action: "deny",  status: "active",   priority: 200, createdAt: "۱۴۰۲/۱۲/۱۰", hits: 340   },
+  { id: "fw-06", name: "allow-outbound",    region: "tehran",  direction: "outbound", protocol: "Any",  portRange: "any",    source: "any",            destination: "0.0.0.0/0",    action: "allow", status: "active",   priority: 900, createdAt: "۱۴۰۲/۱۲/۰۱", hits: 8900  },
+  { id: "fw-07", name: "allow-icmp",        region: "tehran",  direction: "inbound",  protocol: "ICMP", portRange: "—",      source: "0.0.0.0/0",      destination: "any",           action: "allow", status: "inactive", priority: 150, createdAt: "۱۴۰۳/۰۱/۰۵", hits: 0     },
+  { id: "fw-08", name: "allow-http-isf",    region: "isfahan", direction: "inbound",  protocol: "TCP",  portRange: "80,443", source: "0.0.0.0/0",      destination: "192.168.10.51", action: "allow", status: "active",   priority: 100, createdAt: "۱۴۰۳/۰۲/۰۵", hits: 7230  },
+  { id: "fw-09", name: "block-rdp-isf",     region: "isfahan", direction: "inbound",  protocol: "TCP",  portRange: "3389",   source: "0.0.0.0/0",      destination: "any",           action: "deny",  status: "active",   priority: 210, createdAt: "۱۴۰۳/۰۲/۱۰", hits: 1820  },
+  { id: "fw-10", name: "allow-ssh-isf",     region: "isfahan", direction: "inbound",  protocol: "TCP",  portRange: "22",     source: "10.0.0.0/8",     destination: "any",           action: "allow", status: "active",   priority: 120, createdAt: "۱۴۰۳/۰۲/۰۵", hits: 95    },
+  { id: "fw-11", name: "allow-http-msh",    region: "mashhad", direction: "inbound",  protocol: "TCP",  portRange: "80,443", source: "0.0.0.0/0",      destination: "10.20.30.102",  action: "allow", status: "active",   priority: 100, createdAt: "۱۴۰۳/۰۱/۲۰", hits: 3410  },
+  { id: "fw-12", name: "allow-db-msh",      region: "mashhad", direction: "inbound",  protocol: "TCP",  portRange: "5432",   source: "10.1.0.0/24",    destination: "10.20.30.101",  action: "allow", status: "active",   priority: 130, createdAt: "۱۴۰۳/۰۱/۲۵", hits: 1250  },
 ];
 
-const DIRECTION_OPTIONS = [
-  { value: "all",      label: "همه جهت‌ها"  },
-  { value: "inbound",  label: "ورودی"        },
-  { value: "outbound", label: "خروجی"        },
-];
+const REGION_LABEL: Record<string, string> = { tehran: "تهران", isfahan: "اصفهان", mashhad: "مشهد" };
 
-const ACTION_OPTIONS = [
-  { value: "all",   label: "همه قوانین" },
-  { value: "allow", label: "مجاز"       },
-  { value: "deny",  label: "مسدود"      },
-];
+// Hit count bar
+function HitBar({ hits }: { hits: number }) {
+  const max = 35000;
+  const pct = Math.min((hits / max) * 100, 100);
+  const color = hits > 10000 ? "#1a4d8f" : hits > 1000 ? "#16a34a" : "#d97706";
+  return (
+    <div className="flex items-center gap-6 min-w-[90px]">
+      <div className="flex-1 h-[5px] rounded-full bg-border overflow-hidden">
+        <div className="h-full rounded-full" style={{ width: `${pct}%`, background: color }} />
+      </div>
+      <span className="ltr-text text-[11px] text-text-muted w-[40px] text-end">
+        {hits >= 1000 ? `${(hits / 1000).toFixed(1)}K` : hits}
+      </span>
+    </div>
+  );
+}
 
-const REGION_LABEL: Record<string, string> = {
-  tehran: "تهران", isfahan: "اصفهان", mashhad: "مشهد",
-};
-
-type PageState = "loading" | "error" | "empty" | "partial" | "ready";
+// Traffic flow split bar
+function FlowBar({ inbound, outbound }: { inbound: number; outbound: number }) {
+  const total = inbound + outbound || 1;
+  const inPct  = Math.round((inbound  / total) * 100);
+  const outPct = 100 - inPct;
+  return (
+    <div>
+      <div className="flex h-[12px] rounded-full overflow-hidden">
+        <div className="transition-all" style={{ width: `${inPct}%`, background: "#1a4d8f" }} />
+        <div className="transition-all" style={{ width: `${outPct}%`, background: "#16a34a" }} />
+      </div>
+      <div className="flex items-center justify-between mt-6">
+        <div className="flex items-center gap-4"><span className="w-8 h-8 rounded-1 bg-brand inline-block" /><span className="text-[11px] text-text-muted">ورودی {inPct}%</span></div>
+        <div className="flex items-center gap-4"><span className="w-8 h-8 rounded-1 inline-block" style={{ background: "#16a34a" }} /><span className="text-[11px] text-text-muted">خروجی {outPct}%</span></div>
+      </div>
+    </div>
+  );
+}
 
 export default function FirewallPage() {
-  const [pageState, setPageState]   = useState<PageState>("ready");
-  const [region, setRegion]         = useState("all");
-  const [dirFilter, setDirFilter]   = useState("all");
-  const [actFilter, setActFilter]   = useState("all");
-  const [search, setSearch]         = useState("");
+  const [region, setRegion]             = useState("all");
+  const [search, setSearch]             = useState("");
+  const [directionFilter, setDirection] = useState("all");
+  const [actionFilter, setAction]       = useState("all");
 
   const byRegion = useMemo(
     () => region === "all" ? ALL_RULES : ALL_RULES.filter(r => r.region === region),
     [region]
   );
 
-  const rules = useMemo(() => {
-    const q = search.trim().toLowerCase();
+  const filtered = useMemo(() => {
     return byRegion.filter(r => {
-      const matchDir = dirFilter === "all" || r.direction === dirFilter;
-      const matchAct = actFilter === "all" || r.action === actFilter;
-      const matchQ   = !q || r.name.toLowerCase().includes(q) || r.portRange.includes(q) || r.source.includes(q);
-      return matchDir && matchAct && matchQ;
+      if (directionFilter !== "all" && r.direction !== directionFilter) return false;
+      if (actionFilter    !== "all" && r.action    !== actionFilter)    return false;
+      if (search) {
+        const q = search.toLowerCase();
+        if (!r.name.toLowerCase().includes(q) && !r.portRange.includes(q) && !r.source.includes(q)) return false;
+      }
+      return true;
     });
-  }, [byRegion, dirFilter, actFilter, search]);
+  }, [byRegion, directionFilter, actionFilter, search]);
 
   const kpis = useMemo(() => ({
     total:    byRegion.length,
@@ -92,8 +111,14 @@ export default function FirewallPage() {
     denied:   byRegion.filter(r => r.action === "deny").length,
   }), [byRegion]);
 
-  const noResults = byRegion.length > 0 && rules.length === 0;
-  const clearFilters = () => { setSearch(""); setDirFilter("all"); setActFilter("all"); };
+  const totalHits     = useMemo(() => byRegion.reduce((s, r) => s + r.hits, 0), [byRegion]);
+  const inboundHits   = useMemo(() => byRegion.filter(r => r.direction === "inbound").reduce((s, r) => s + r.hits, 0), [byRegion]);
+  const outboundHits  = useMemo(() => byRegion.filter(r => r.direction === "outbound").reduce((s, r) => s + r.hits, 0), [byRegion]);
+  const deniedHits    = useMemo(() => byRegion.filter(r => r.action === "deny").reduce((s, r) => s + r.hits, 0), [byRegion]);
+  const allowedHits   = totalHits - deniedHits;
+
+  // Top rules by hits
+  const topRules = useMemo(() => [...byRegion].sort((a, b) => b.hits - a.hits).slice(0, 5), [byRegion]);
 
   return (
     <DashboardShell
@@ -105,165 +130,125 @@ export default function FirewallPage() {
       ]}
       regions={REGIONS}
       selectedRegion={region}
-      onRegionChange={(r) => { setRegion(r); clearFilters(); }}
+      onRegionChange={setRegion}
     >
-      {/* Dev switcher */}
-      <div className="flex items-center gap-8 flex-wrap">
-        {(["ready","loading","error","empty","partial"] as PageState[]).map(s => (
-          <button key={s} onClick={() => setPageState(s)}
-            className={`px-10 py-4 rounded-6 text-[11px] font-mono border transition-colors
-              ${pageState === s ? "bg-brand text-white border-brand" : "text-text-muted border-border hover:border-border-strong"}`}>
-            {s}
-          </button>
-        ))}
-        <span className="text-[11px] text-text-muted">← حالت نمایش (توسعه)</span>
+      {/* KPI row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-16">
+        <MetricCard icon="⬡" label="کل قوانین"  value={String(kpis.total)}    trend="neutral" trendValue="قانون"   context="فعال و غیرفعال" />
+        <MetricCard icon="↓" label="ورودی"       value={String(kpis.inbound)}  trend="neutral" trendValue="inbound"  context="قوانین ورودی"   />
+        <MetricCard icon="↑" label="خروجی"       value={String(kpis.outbound)} trend="neutral" trendValue="outbound" context="قوانین خروجی"   />
+        <MetricCard icon="✕" label="مسدودسازی"  value={String(kpis.denied)}   trend={kpis.denied > 0 ? "down" : "neutral"} trendValue="deny" context="قوانین مسدود" />
       </div>
 
-      {pageState === "loading" && (
-        <>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-16">
-            {Array.from({ length: 4 }).map((_, i) => <MetricCardSkeleton key={i} />)}
-          </div>
-          <div className="bg-bg-card rounded-20 border border-border overflow-hidden"><TableSkeleton /></div>
-        </>
-      )}
-
-      {pageState === "error" && (
-        <DashboardCard>
-          <ErrorState title="دریافت قوانین فایروال ناموفق بود" description="اتصال به سرویس فایروال برقرار نشد." onRetry={() => setPageState("ready")} />
-        </DashboardCard>
-      )}
-
-      {pageState === "empty" && (
-        <DashboardCard>
-          <EmptyState icon="◧" title="هنوز قانونی تعریف نکرده‌اید"
-            description="قوانین فایروال ترافیک ورودی و خروجی سرورهای شما را کنترل می‌کنند."
-            action={
-              <a href="/iaas/firewall/new" className="px-20 py-9 rounded-8 bg-brand text-white text-[13px] font-medium hover:bg-brand-hover transition-colors">
-                + افزودن قانون جدید
-              </a>
-            }
-          />
-        </DashboardCard>
-      )}
-
-      {pageState === "partial" && (
-        <div className="rounded-12 px-16 py-10 border text-[13px]"
-          style={{ background: "#fef3c7", borderColor: "#fcd34d", color: "#78350f" }}>
-          برخی قوانین بروزرسانی نشدند — داده‌های نمایش‌داده شده ممکن است قدیمی باشند.
-        </div>
-      )}
-
-      {(pageState === "ready" || pageState === "partial") && (
-        <>
-          {/* KPIs */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-16">
-            <MetricCard icon="◧" label="جمع قوانین"    value={String(kpis.total)}    trend="neutral" trendValue="کل"    context="در این منطقه"    />
-            <MetricCard icon="↓" label="قوانین ورودی"  value={String(kpis.inbound)}  trend="neutral" trendValue="ورودی" context="inbound"          />
-            <MetricCard icon="↑" label="قوانین خروجی"  value={String(kpis.outbound)} trend="neutral" trendValue="خروجی" context="outbound"         />
-            <MetricCard icon="⊘" label="مسدود"         value={String(kpis.denied)}   trend={kpis.denied > 0 ? "down" : "neutral"} trendValue="deny" context="قوانین بلاک" />
-          </div>
-
-          {/* Rules table */}
-          <DashboardCard
-            title="قوانین فایروال"
-            action={
-              <a href="/iaas/firewall/new"
-                className="flex items-center gap-6 px-14 py-7 rounded-8 bg-brand text-white text-[12px] font-medium hover:bg-brand-hover transition-colors">
-                + افزودن قانون
-              </a>
-            }
-            padding={false}
-          >
-            {/* Filters */}
-            <div className="flex items-center gap-10 px-20 py-12 border-b border-border flex-wrap">
-              <div className="flex items-center gap-8 flex-1 min-w-[160px] border border-border rounded-8 px-12 h-34 bg-white/40 hover:border-border-strong transition-colors">
-                <span className="text-[13px] text-text-muted shrink-0">⊕</span>
-                <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-                  placeholder="نام، پورت یا IP مبدأ..."
-                  className="flex-1 text-[13px] bg-transparent border-0 outline-none text-text-main placeholder:text-text-placeholder"
-                  style={{ direction: "rtl" }} />
-                {search && <button onClick={() => setSearch("")} className="text-text-muted hover:text-text-main text-[12px]">✕</button>}
+      {/* Traffic flow + Top rules */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+        <div className="lg:col-span-1 flex flex-col gap-16">
+          <DashboardCard title="جریان ترافیک امروز">
+            <div className="mb-16">
+              <p className="text-[12px] text-text-muted mb-8">ورودی در برابر خروجی</p>
+              <FlowBar inbound={inboundHits} outbound={outboundHits} />
+            </div>
+            <div className="grid grid-cols-2 gap-10 mt-8">
+              <div className="p-10 rounded-8 bg-bg-muted/60 border border-border text-center">
+                <p className="text-[18px] font-bold text-brand ltr-text">{(inboundHits / 1000).toFixed(1)}K</p>
+                <p className="text-[11px] text-text-muted">هیت ورودی</p>
               </div>
+              <div className="p-10 rounded-8 bg-bg-muted/60 border border-border text-center">
+                <p className="text-[18px] font-bold ltr-text" style={{ color: "#16a34a" }}>{(outboundHits / 1000).toFixed(1)}K</p>
+                <p className="text-[11px] text-text-muted">هیت خروجی</p>
+              </div>
+            </div>
+            <div className="mt-12 pt-10 border-t border-border">
+              <p className="text-[12px] text-text-muted mb-8">مجاز در برابر مسدود</p>
+              <div className="flex h-[10px] rounded-full overflow-hidden">
+                <div style={{ width: `${Math.round((allowedHits / (totalHits || 1)) * 100)}%`, background: "#16a34a" }} />
+                <div style={{ width: `${Math.round((deniedHits  / (totalHits || 1)) * 100)}%`, background: "#ef4444" }} />
+              </div>
+              <div className="flex items-center justify-between mt-6">
+                <span className="text-[11px] text-text-muted">{Math.round((allowedHits / (totalHits || 1)) * 100)}٪ مجاز</span>
+                <span className="text-[11px] text-danger">{Math.round((deniedHits / (totalHits || 1)) * 100)}٪ مسدود</span>
+              </div>
+            </div>
+          </DashboardCard>
 
-              {[
-                { value: dirFilter, setter: setDirFilter, options: DIRECTION_OPTIONS },
-                { value: actFilter, setter: setActFilter, options: ACTION_OPTIONS    },
-              ].map(({ value, setter, options }, idx) => (
-                <div key={idx} className="flex items-center gap-6 border border-border rounded-8 px-10 h-34 bg-white/40 hover:border-border-strong transition-colors">
-                  <select value={value} onChange={e => setter(e.target.value)}
-                    className="text-[13px] font-medium text-text-main bg-transparent border-0 outline-none cursor-pointer"
-                    style={{ direction: "rtl" }}>
-                    {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                  </select>
+          <DashboardCard title="پرترافیک‌ترین قوانین">
+            <div className="flex flex-col gap-10">
+              {topRules.map((r, i) => (
+                <div key={r.id} className="flex items-center gap-8">
+                  <span className="text-[11px] font-bold text-text-muted w-[16px] shrink-0">{i + 1}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[12px] font-medium text-text-main ltr-text truncate">{r.name}</p>
+                    <p className="text-[10px] text-text-muted ltr-text">{r.portRange !== "any" ? `port ${r.portRange}` : r.protocol}</p>
+                  </div>
+                  <HitBar hits={r.hits} />
                 </div>
               ))}
-
-              <span className="text-[12px] text-text-muted ltr-text ms-auto">{rules.length} / {byRegion.length}</span>
             </div>
+          </DashboardCard>
+        </div>
 
-            {byRegion.length === 0 ? (
-              <EmptyState icon="◧" title="در این منطقه قانون فایروالی وجود ندارد" />
-            ) : noResults ? (
-              <EmptyState icon="⊕" title="قانونی با این فیلترها یافت نشد"
-                action={<button onClick={clearFilters} className="px-16 py-7 rounded-8 border border-border text-[13px] text-text-muted hover:border-border-strong transition-colors">پاک کردن فیلترها</button>}
-              />
-            ) : (
+        {/* Rules table */}
+        <div className="lg:col-span-2">
+          <DashboardCard title="قوانین فایروال" padding={false}>
+            <div className="flex items-center gap-10 px-16 py-12 border-b border-border flex-wrap">
+              <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="جستجو نام، پورت، مبدأ..."
+                className="flex-1 min-w-[160px] h-34 rounded-8 border border-border bg-white/60 px-12 text-[13px] placeholder:text-text-placeholder outline-none focus:border-border-strong"
+                dir="rtl" />
+              <select value={directionFilter} onChange={e => setDirection(e.target.value)}
+                className="h-34 rounded-8 border border-border bg-white/60 px-10 text-[13px] outline-none cursor-pointer" dir="rtl">
+                <option value="all">همه جهت‌ها</option>
+                <option value="inbound">ورودی</option>
+                <option value="outbound">خروجی</option>
+              </select>
+              <select value={actionFilter} onChange={e => setAction(e.target.value)}
+                className="h-34 rounded-8 border border-border bg-white/60 px-10 text-[13px] outline-none cursor-pointer" dir="rtl">
+                <option value="all">همه قوانین</option>
+                <option value="allow">مجاز</option>
+                <option value="deny">مسدود</option>
+              </select>
+            </div>
+            {filtered.length === 0 ? <EmptyState icon="⬡" title="قانونی یافت نشد" /> : (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[700px]">
+                <table className="w-full text-[13px]">
                   <thead>
                     <tr className="border-b border-border">
-                      <th className="px-20 py-10 text-start text-[12px] font-semibold text-text-muted">نام قانون</th>
-                      <th className="px-16 py-10 text-start text-[12px] font-semibold text-text-muted">جهت</th>
-                      <th className="px-16 py-10 text-start text-[12px] font-semibold text-text-muted">عملکرد</th>
-                      <th className="px-16 py-10 text-start text-[12px] font-semibold text-text-muted hidden sm:table-cell">پروتکل</th>
-                      <th className="px-16 py-10 text-start text-[12px] font-semibold text-text-muted hidden md:table-cell">پورت</th>
-                      <th className="px-16 py-10 text-start text-[12px] font-semibold text-text-muted hidden lg:table-cell">مبدأ</th>
-                      <th className="px-16 py-10 text-start text-[12px] font-semibold text-text-muted hidden xl:table-cell">اولویت</th>
-                      <th className="px-16 py-10 text-start text-[12px] font-semibold text-text-muted hidden xl:table-cell">منطقه</th>
-                      <th className="px-16 py-10 text-end   text-[12px] font-semibold text-text-muted">عملیات</th>
+                      <th className="text-start px-12 py-10 text-[12px] font-medium text-text-muted">نام قانون</th>
+                      <th className="text-start px-12 py-10 text-[12px] font-medium text-text-muted">جهت</th>
+                      <th className="text-start px-12 py-10 text-[12px] font-medium text-text-muted">عملکرد</th>
+                      <th className="text-start px-12 py-10 text-[12px] font-medium text-text-muted hidden md:table-cell">پورت</th>
+                      <th className="text-start px-12 py-10 text-[12px] font-medium text-text-muted hidden lg:table-cell">هیت‌های امروز</th>
+                      <th className="px-12 py-10 w-10"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {rules.map((r, i) => (
-                      <tr key={r.id}
-                        className={`border-b border-border last:border-0 hover:bg-bg transition-colors ${i % 2 !== 0 ? "bg-bg" : ""}`}>
-                        <td className="px-20 py-12">
+                    {filtered.map((r, i) => (
+                      <tr key={r.id} className={`border-b border-border last:border-0 hover:bg-brand-light/30 transition-colors ${i % 2 !== 0 ? "bg-white/20" : ""}`}>
+                        <td className="px-12 py-10">
                           <div className="flex items-center gap-8">
                             <span className={`w-7 h-7 rounded-full shrink-0 ${r.status === "active" ? "bg-success" : "bg-border-strong"}`} />
-                            <span className="text-[14px] font-medium text-text-main">{r.name}</span>
+                            <span className="ltr-text text-[12px] font-medium text-text-main">{r.name}</span>
                           </div>
                         </td>
-                        <td className="px-16 py-12">
+                        <td className="px-12 py-10">
                           <StatusBadge variant={r.direction === "inbound" ? "info" : "success"}>
                             {r.direction === "inbound" ? "ورودی" : "خروجی"}
                           </StatusBadge>
                         </td>
-                        <td className="px-16 py-12">
+                        <td className="px-12 py-10">
                           <StatusBadge variant={r.action === "allow" ? "success" : "danger"}>
                             {r.action === "allow" ? "مجاز" : "مسدود"}
                           </StatusBadge>
                         </td>
-                        <td className="px-16 py-12 hidden sm:table-cell">
-                          <span className="ltr-text text-[13px] text-text-muted font-mono">{r.protocol}</span>
+                        <td className="px-12 py-10 hidden md:table-cell">
+                          <span className="ltr-text font-mono text-[12px] text-text-muted">{r.portRange}</span>
                         </td>
-                        <td className="px-16 py-12 hidden md:table-cell">
-                          <span className="ltr-text text-[13px] text-text-muted font-mono">{r.portRange}</span>
-                        </td>
-                        <td className="px-16 py-12 hidden lg:table-cell">
-                          <span className="ltr-text text-[13px] text-text-muted font-mono">{r.source}</span>
-                        </td>
-                        <td className="px-16 py-12 hidden xl:table-cell">
-                          <span className="ltr-text text-[13px] text-text-muted">{r.priority}</span>
-                        </td>
-                        <td className="px-16 py-12 hidden xl:table-cell">
-                          <span className="text-[13px] text-text-muted">{REGION_LABEL[r.region] ?? r.region}</span>
-                        </td>
-                        <td className="px-16 py-12 text-end">
+                        <td className="px-12 py-10 hidden lg:table-cell"><HitBar hits={r.hits} /></td>
+                        <td className="px-12 py-10">
                           <ActionMenu items={[
-                            { label: "ویرایش قانون",   onClick: () => {} },
+                            { label: "ویرایش قانون",  onClick: () => {} },
                             { label: r.status === "active" ? "غیرفعال کردن" : "فعال کردن", onClick: () => {} },
-                            { label: "حذف قانون",      onClick: () => {}, danger: true },
+                            { label: "حذف قانون",     onClick: () => {}, danger: true },
                           ]} />
                         </td>
                       </tr>
@@ -273,8 +258,8 @@ export default function FirewallPage() {
               </div>
             )}
           </DashboardCard>
-        </>
-      )}
+        </div>
+      </div>
     </DashboardShell>
   );
 }

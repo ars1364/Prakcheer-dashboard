@@ -6,6 +6,10 @@ import MetricCard from "@/components/ui/MetricCard";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
+import {
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
+} from "recharts";
 
 const REGIONS = [
   { id: "all", label: "همه مناطق" },
@@ -43,6 +47,12 @@ const ALL_SNAPSHOTS: Snapshot[] = [
   { id: "snap-010", name: "در-حال-حذف-قدیمی", source: "server", sourceId: "srv-05", size: 20, status: "deleting", region: "tehran", created: "۱۴۰۳/۰۱/۱۵ ۰۳:۰۰", description: null, autoSnapshot: true },
 ];
 
+const REGION_STORAGE = [
+  { name: "تهران", سرور: 64, دیسک: 108 },
+  { name: "اصفهان", سرور: 58, دیسک: 62 },
+  { name: "مشهد", سرور: 15, دیسک: 85 },
+];
+
 const STATUS_LABEL: Record<SnapshotStatus, string> = {
   available: "موجود",
   creating: "در حال ساخت",
@@ -56,6 +66,19 @@ const STATUS_VARIANT: Record<SnapshotStatus, "success" | "warning" | "danger" | 
   error: "danger",
   deleting: "info",
 };
+
+function SizeBar({ size, max }: { size: number; max: number }) {
+  const pct = max > 0 ? (size / max) * 100 : 0;
+  const color = size > 80 ? "#ef4444" : size > 40 ? "#f59e0b" : "#3b82f6";
+  return (
+    <div className="flex items-center gap-8">
+      <div className="w-[56px] h-6 rounded-full bg-bg-muted overflow-hidden">
+        <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
+      </div>
+      <span className="ltr-text text-[12px] text-text-main font-medium">{size} GB</span>
+    </div>
+  );
+}
 
 export default function SnapshotsPage() {
   const [region, setRegion] = useState("all");
@@ -87,7 +110,20 @@ export default function SnapshotsPage() {
     error: byRegion.filter(s => s.status === "error").length,
   }), [byRegion]);
 
+  const typePie = useMemo(() => [
+    { name: "خودکار", value: byRegion.filter(s => s.autoSnapshot).length, color: "#3b82f6" },
+    { name: "دستی", value: byRegion.filter(s => !s.autoSnapshot).length, color: "#8b5cf6" },
+  ].filter(d => d.value > 0), [byRegion]);
+
+  const sourcePie = useMemo(() => [
+    { name: "از سرور", value: byRegion.filter(s => s.source === "server").length, color: "#22c55e" },
+    { name: "از دیسک", value: byRegion.filter(s => s.source === "volume").length, color: "#f59e0b" },
+  ].filter(d => d.value > 0), [byRegion]);
+
+  const maxSize = useMemo(() => Math.max(...byRegion.map(s => s.size), 1), [byRegion]);
+
   const regionLabel = (r: string) => ({ tehran: "تهران", isfahan: "اصفهان", mashhad: "مشهد" }[r] ?? r);
+  const fontStyle = { fontFamily: "var(--font-vazirmatn)", fontSize: 11 };
 
   return (
     <DashboardShell
@@ -107,6 +143,77 @@ export default function SnapshotsPage() {
         <MetricCard icon="📦" label="فضای مصرفی (GB)" value={kpis.totalGB.toLocaleString("fa-IR")} />
         <MetricCard icon="🔄" label="خودکار" value={String(kpis.auto)} />
         <MetricCard icon="⚠️" label="خطا" value={String(kpis.error)} />
+      </div>
+
+      {/* Charts row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-20 mb-24">
+
+        {/* Auto vs Manual donut */}
+        <DashboardCard title="خودکار در مقابل دستی">
+          <div className="h-[150px] ltr-text">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={typePie} cx="50%" cy="50%" innerRadius={44} outerRadius={64} dataKey="value" strokeWidth={2}>
+                  {typePie.map((d, i) => <Cell key={i} fill={d.color} />)}
+                </Pie>
+                <Tooltip contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 8, ...fontStyle }} formatter={(v, n) => [`${v} عدد`, n]} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex flex-col gap-6 mt-8">
+            {typePie.map(d => (
+              <div key={d.name} className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="w-10 h-10 rounded-2" style={{ background: d.color }} />
+                  <span className="text-[12px] text-text-muted">{d.name}</span>
+                </div>
+                <span className="text-[12px] font-semibold ltr-text">{d.value} عدد</span>
+              </div>
+            ))}
+          </div>
+        </DashboardCard>
+
+        {/* Source breakdown donut */}
+        <DashboardCard title="منبع اسنپ‌شات">
+          <div className="h-[150px] ltr-text">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={sourcePie} cx="50%" cy="50%" innerRadius={44} outerRadius={64} dataKey="value" strokeWidth={2}>
+                  {sourcePie.map((d, i) => <Cell key={i} fill={d.color} />)}
+                </Pie>
+                <Tooltip contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 8, ...fontStyle }} formatter={(v, n) => [`${v} عدد`, n]} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex flex-col gap-6 mt-8">
+            {sourcePie.map(d => (
+              <div key={d.name} className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="w-10 h-10 rounded-2" style={{ background: d.color }} />
+                  <span className="text-[12px] text-text-muted">{d.name}</span>
+                </div>
+                <span className="text-[12px] font-semibold ltr-text">{d.value} عدد</span>
+              </div>
+            ))}
+          </div>
+        </DashboardCard>
+
+        {/* Storage by region stacked bar */}
+        <DashboardCard title="فضای مصرفی بر اساس منطقه">
+          <div className="h-[210px] ltr-text">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={REGION_STORAGE} margin={{ top: 4, right: 4, left: -12, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                <XAxis dataKey="name" tick={fontStyle} axisLine={false} tickLine={false} />
+                <YAxis tick={fontStyle} axisLine={false} tickLine={false} unit=" GB" />
+                <Tooltip contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 8, ...fontStyle }} formatter={(v) => [`${v} GB`]} />
+                <Bar dataKey="سرور" stackId="a" fill="#22c55e" />
+                <Bar dataKey="دیسک" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Legend wrapperStyle={{ ...fontStyle, paddingTop: 8 }} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </DashboardCard>
       </div>
 
       {/* Filter bar */}
@@ -162,8 +269,7 @@ export default function SnapshotsPage() {
               <tr className="border-b border-border">
                 <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">نام اسنپ‌شات</th>
                 <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">منبع</th>
-                <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">شناسه منبع</th>
-                <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">حجم (GB)</th>
+                <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">حجم</th>
                 <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">وضعیت</th>
                 <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">نوع</th>
                 <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">منطقه</th>
@@ -174,7 +280,7 @@ export default function SnapshotsPage() {
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-40 text-text-muted text-[13px]">
+                  <td colSpan={8} className="text-center py-40 text-text-muted text-[13px]">
                     اسنپ‌شاتی یافت نشد
                   </td>
                 </tr>
@@ -190,7 +296,7 @@ export default function SnapshotsPage() {
                         {snap.description && (
                           <p className="text-[11px] text-text-muted mt-2">{snap.description}</p>
                         )}
-                        <p className="text-[11px] text-text-placeholder ltr-text">{snap.id}</p>
+                        <p className="text-[11px] text-text-placeholder ltr-text">{snap.id} / {snap.sourceId}</p>
                       </div>
                     </td>
                     <td className="px-16 py-12">
@@ -198,9 +304,10 @@ export default function SnapshotsPage() {
                         {snap.source === "server" ? "سرور" : "دیسک"}
                       </span>
                     </td>
-                    <td className="px-16 py-12 ltr-text text-brand font-mono text-[12px]">{snap.sourceId}</td>
-                    <td className="px-16 py-12 ltr-text font-medium text-text-main">
-                      {snap.size > 0 ? snap.size : <span className="text-text-placeholder">—</span>}
+                    <td className="px-16 py-12">
+                      {snap.size > 0
+                        ? <SizeBar size={snap.size} max={maxSize} />
+                        : <span className="text-text-placeholder text-[12px]">—</span>}
                     </td>
                     <td className="px-16 py-12">
                       <StatusBadge variant={STATUS_VARIANT[snap.status]}>
@@ -209,9 +316,9 @@ export default function SnapshotsPage() {
                     </td>
                     <td className="px-16 py-12">
                       {snap.autoSnapshot ? (
-                        <span className="text-[11px] text-success">خودکار</span>
+                        <span className="text-[11px] px-8 py-3 rounded-6 bg-blue-50 text-blue-600 border border-blue-200">خودکار</span>
                       ) : (
-                        <span className="text-[11px] text-text-muted">دستی</span>
+                        <span className="text-[11px] px-8 py-3 rounded-6 bg-purple-50 text-purple-600 border border-purple-200">دستی</span>
                       )}
                     </td>
                     <td className="px-16 py-12 text-text-muted">{regionLabel(snap.region)}</td>

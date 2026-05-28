@@ -6,6 +6,10 @@ import MetricCard from "@/components/ui/MetricCard";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
+import {
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
+} from "recharts";
 
 const REGIONS = [
   { id: "all", label: "همه مناطق" },
@@ -25,19 +29,27 @@ interface FloatingIP {
   attachedTo: string | null;
   bandwidth: string;
   created: string;
+  trafficIn: number;
+  trafficOut: number;
 }
 
 const ALL_IPS: FloatingIP[] = [
-  { id: "fip-001", ip: "185.47.22.10", rdns: "web1.tehran.prakcheer.io", status: "attached", region: "tehran", attachedTo: "srv-01", bandwidth: "1 Gbps", created: "۱۴۰۳/۰۱/۱۰" },
-  { id: "fip-002", ip: "185.47.22.11", rdns: "api.tehran.prakcheer.io", status: "attached", region: "tehran", attachedTo: "srv-02", bandwidth: "1 Gbps", created: "۱۴۰۳/۰۱/۱۲" },
-  { id: "fip-003", ip: "185.47.22.15", rdns: null, status: "unattached", region: "tehran", attachedTo: null, bandwidth: "1 Gbps", created: "۱۴۰۳/۰۲/۰۵" },
-  { id: "fip-004", ip: "185.47.22.20", rdns: "lb.tehran.prakcheer.io", status: "attached", region: "tehran", attachedTo: "srv-10", bandwidth: "10 Gbps", created: "۱۴۰۳/۰۳/۰۱" },
-  { id: "fip-005", ip: "5.22.187.10", rdns: "web1.isfahan.prakcheer.io", status: "attached", region: "isfahan", attachedTo: "srv-03", bandwidth: "1 Gbps", created: "۱۴۰۳/۰۱/۲۰" },
-  { id: "fip-006", ip: "5.22.187.11", rdns: null, status: "unattached", region: "isfahan", attachedTo: null, bandwidth: "1 Gbps", created: "۱۴۰۳/۰۲/۱۵" },
-  { id: "fip-007", ip: "5.22.187.50", rdns: "reserved.isfahan.node", status: "reserved", region: "isfahan", attachedTo: null, bandwidth: "1 Gbps", created: "۱۴۰۳/۰۳/۰۳" },
-  { id: "fip-008", ip: "91.98.44.10", rdns: "web1.mashhad.prakcheer.io", status: "attached", region: "mashhad", attachedTo: "srv-07", bandwidth: "1 Gbps", created: "۱۴۰۳/۰۲/۰۱" },
-  { id: "fip-009", ip: "91.98.44.11", rdns: null, status: "unattached", region: "mashhad", attachedTo: null, bandwidth: "1 Gbps", created: "۱۴۰۳/۰۲/۱۸" },
-  { id: "fip-010", ip: "185.47.22.99", rdns: "monitor.tehran.prakcheer.io", status: "attached", region: "tehran", attachedTo: "srv-05", bandwidth: "1 Gbps", created: "۱۴۰۳/۰۳/۰۴" },
+  { id: "fip-001", ip: "185.47.22.10", rdns: "web1.tehran.prakcheer.io", status: "attached", region: "tehran", attachedTo: "srv-01", bandwidth: "1 Gbps", created: "۱۴۰۳/۰۱/۱۰", trafficIn: 1240, trafficOut: 890 },
+  { id: "fip-002", ip: "185.47.22.11", rdns: "api.tehran.prakcheer.io", status: "attached", region: "tehran", attachedTo: "srv-02", bandwidth: "1 Gbps", created: "۱۴۰۳/۰۱/۱۲", trafficIn: 880, trafficOut: 2100 },
+  { id: "fip-003", ip: "185.47.22.15", rdns: null, status: "unattached", region: "tehran", attachedTo: null, bandwidth: "1 Gbps", created: "۱۴۰۳/۰۲/۰۵", trafficIn: 0, trafficOut: 0 },
+  { id: "fip-004", ip: "185.47.22.20", rdns: "lb.tehran.prakcheer.io", status: "attached", region: "tehran", attachedTo: "srv-10", bandwidth: "10 Gbps", created: "۱۴۰۳/۰۳/۰۱", trafficIn: 5600, trafficOut: 4200 },
+  { id: "fip-005", ip: "5.22.187.10", rdns: "web1.isfahan.prakcheer.io", status: "attached", region: "isfahan", attachedTo: "srv-03", bandwidth: "1 Gbps", created: "۱۴۰۳/۰۱/۲۰", trafficIn: 760, trafficOut: 540 },
+  { id: "fip-006", ip: "5.22.187.11", rdns: null, status: "unattached", region: "isfahan", attachedTo: null, bandwidth: "1 Gbps", created: "۱۴۰۳/۰۲/۱۵", trafficIn: 0, trafficOut: 0 },
+  { id: "fip-007", ip: "5.22.187.50", rdns: "reserved.isfahan.node", status: "reserved", region: "isfahan", attachedTo: null, bandwidth: "1 Gbps", created: "۱۴۰۳/۰۳/۰۳", trafficIn: 0, trafficOut: 0 },
+  { id: "fip-008", ip: "91.98.44.10", rdns: "web1.mashhad.prakcheer.io", status: "attached", region: "mashhad", attachedTo: "srv-07", bandwidth: "1 Gbps", created: "۱۴۰۳/۰۲/۰۱", trafficIn: 480, trafficOut: 320 },
+  { id: "fip-009", ip: "91.98.44.11", rdns: null, status: "unattached", region: "mashhad", attachedTo: null, bandwidth: "1 Gbps", created: "۱۴۰۳/۰۲/۱۸", trafficIn: 0, trafficOut: 0 },
+  { id: "fip-010", ip: "185.47.22.99", rdns: "monitor.tehran.prakcheer.io", status: "attached", region: "tehran", attachedTo: "srv-05", bandwidth: "1 Gbps", created: "۱۴۰۳/۰۳/۰۴", trafficIn: 210, trafficOut: 180 },
+];
+
+const REGION_ALLOC = [
+  { name: "تهران", attached: 4, free: 1, reserved: 0 },
+  { name: "اصفهان", attached: 1, free: 1, reserved: 1 },
+  { name: "مشهد", attached: 1, free: 1, reserved: 0 },
 ];
 
 const STATUS_LABEL: Record<IPStatus, string> = {
@@ -51,6 +63,32 @@ const STATUS_VARIANT: Record<IPStatus, "success" | "info" | "warning"> = {
   unattached: "info",
   reserved: "warning",
 };
+
+const STATUS_COLOR: Record<IPStatus, string> = {
+  attached: "#22c55e",
+  unattached: "#94a3b8",
+  reserved: "#f59e0b",
+};
+
+function TrafficBar({ inn, out }: { inn: number; out: number }) {
+  const max = Math.max(inn, out, 1);
+  return (
+    <div className="flex flex-col gap-2 w-[72px]">
+      <div className="flex items-center gap-4">
+        <span className="text-[10px] text-text-muted w-8">↓</span>
+        <div className="flex-1 h-4 rounded-full bg-bg-muted overflow-hidden">
+          <div className="h-full rounded-full" style={{ width: `${(inn / max) * 100}%`, background: "#3b82f6" }} />
+        </div>
+      </div>
+      <div className="flex items-center gap-4">
+        <span className="text-[10px] text-text-muted w-8">↑</span>
+        <div className="flex-1 h-4 rounded-full bg-bg-muted overflow-hidden">
+          <div className="h-full rounded-full" style={{ width: `${(out / max) * 100}%`, background: "#8b5cf6" }} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function FloatingIPsPage() {
   const [region, setRegion] = useState("all");
@@ -80,7 +118,15 @@ export default function FloatingIPsPage() {
     reserved: byRegion.filter(ip => ip.status === "reserved").length,
   }), [byRegion]);
 
+  const pieData = useMemo(() => [
+    { name: "متصل", value: kpis.attached, color: "#22c55e" },
+    { name: "آزاد", value: kpis.free, color: "#94a3b8" },
+    { name: "رزرو", value: kpis.reserved, color: "#f59e0b" },
+  ].filter(d => d.value > 0), [kpis]);
+
   const regionLabel = (r: string) => ({ tehran: "تهران", isfahan: "اصفهان", mashhad: "مشهد" }[r] ?? r);
+
+  const fontStyle = { fontFamily: "var(--font-vazirmatn)", fontSize: 11 };
 
   return (
     <DashboardShell
@@ -100,6 +146,93 @@ export default function FloatingIPsPage() {
         <MetricCard icon="🔗" label="متصل" value={String(kpis.attached)} />
         <MetricCard icon="◎" label="آزاد" value={String(kpis.free)} />
         <MetricCard icon="📌" label="رزرو شده" value={String(kpis.reserved)} />
+      </div>
+
+      {/* Charts row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-20 mb-24">
+
+        {/* IP allocation visual grid */}
+        <DashboardCard title="نقشه تخصیص IP">
+          <div className="mb-10">
+            <p className="text-[11px] text-text-muted mb-12">هر مربع یک IP شناور است</p>
+            <div className="flex flex-wrap gap-6">
+              {byRegion.map(ip => (
+                <div
+                  key={ip.id}
+                  title={`${ip.ip}${ip.attachedTo ? ` → ${ip.attachedTo}` : ""}`}
+                  className="w-20 h-20 rounded-4 cursor-default transition-transform hover:scale-125"
+                  style={{ background: STATUS_COLOR[ip.status] }}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="flex gap-12 mt-14 flex-wrap">
+            {Object.entries(STATUS_COLOR).map(([st, col]) => (
+              <div key={st} className="flex items-center gap-5">
+                <div className="w-10 h-10 rounded-2" style={{ background: col }} />
+                <span className="text-[11px] text-text-muted">{STATUS_LABEL[st as IPStatus]}</span>
+              </div>
+            ))}
+          </div>
+        </DashboardCard>
+
+        {/* Status distribution donut */}
+        <DashboardCard title="توزیع وضعیت">
+          <div className="h-[160px] ltr-text">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={48}
+                  outerRadius={70}
+                  dataKey="value"
+                  strokeWidth={2}
+                >
+                  {pieData.map((entry, i) => (
+                    <Cell key={i} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 8, ...fontStyle }}
+                  formatter={(v: number, n: string) => [`${v} IP`, n]}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex flex-col gap-6 mt-8">
+            {pieData.map(d => (
+              <div key={d.name} className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="w-10 h-10 rounded-2" style={{ background: d.color }} />
+                  <span className="text-[12px] text-text-muted">{d.name}</span>
+                </div>
+                <span className="text-[12px] font-semibold text-text-main ltr-text">{d.value}</span>
+              </div>
+            ))}
+          </div>
+        </DashboardCard>
+
+        {/* Allocation by region stacked bar */}
+        <DashboardCard title="تخصیص بر اساس منطقه">
+          <div className="h-[200px] ltr-text">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={REGION_ALLOC} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                <XAxis dataKey="name" tick={fontStyle} axisLine={false} tickLine={false} />
+                <YAxis tick={fontStyle} axisLine={false} tickLine={false} />
+                <Tooltip
+                  contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 8, ...fontStyle }}
+                />
+                <Bar dataKey="attached" name="متصل" stackId="a" fill="#22c55e" radius={[0, 0, 0, 0]} />
+                <Bar dataKey="free" name="آزاد" stackId="a" fill="#94a3b8" />
+                <Bar dataKey="reserved" name="رزرو" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Legend wrapperStyle={{ ...fontStyle, paddingTop: 8 }} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </DashboardCard>
       </div>
 
       {/* Filter bar */}
@@ -146,7 +279,7 @@ export default function FloatingIPsPage() {
                 <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">rDNS</th>
                 <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">وضعیت</th>
                 <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">متصل به</th>
-                <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">پهنای باند</th>
+                <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">ترافیک (MB)</th>
                 <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">منطقه</th>
                 <th className="text-start px-16 py-12 text-[12px] font-medium text-text-muted">تاریخ ساخت</th>
                 <th className="px-16 py-12 text-[12px] font-medium text-text-muted w-10"></th>
@@ -166,9 +299,15 @@ export default function FloatingIPsPage() {
                     className={`border-b border-border last:border-0 hover:bg-brand-light/40 transition-colors ${i % 2 === 0 ? "" : "bg-white/20"}`}
                   >
                     <td className="px-16 py-12">
-                      <div>
-                        <span className="ltr-text font-mono font-semibold text-text-main">{fip.ip}</span>
-                        <p className="text-[11px] text-text-muted ltr-text">{fip.id}</p>
+                      <div className="flex items-center gap-8">
+                        <div
+                          className="w-8 h-8 rounded-full flex-shrink-0"
+                          style={{ background: STATUS_COLOR[fip.status] }}
+                        />
+                        <div>
+                          <span className="ltr-text font-mono font-semibold text-text-main">{fip.ip}</span>
+                          <p className="text-[11px] text-text-muted ltr-text">{fip.id}</p>
+                        </div>
                       </div>
                     </td>
                     <td className="px-16 py-12">
@@ -186,7 +325,11 @@ export default function FloatingIPsPage() {
                         ? <span className="ltr-text text-brand font-mono text-[12px]">{fip.attachedTo}</span>
                         : <span className="text-text-placeholder">—</span>}
                     </td>
-                    <td className="px-16 py-12 ltr-text text-text-muted">{fip.bandwidth}</td>
+                    <td className="px-16 py-12">
+                      {fip.trafficIn > 0 || fip.trafficOut > 0
+                        ? <TrafficBar inn={fip.trafficIn} out={fip.trafficOut} />
+                        : <span className="text-text-placeholder text-[12px]">—</span>}
+                    </td>
                     <td className="px-16 py-12 text-text-muted">{regionLabel(fip.region)}</td>
                     <td className="px-16 py-12 ltr-text text-text-muted">{fip.created}</td>
                     <td className="px-16 py-12">
