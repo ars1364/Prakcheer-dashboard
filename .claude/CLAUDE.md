@@ -42,6 +42,11 @@ RTL Farsi cloud-infrastructure dashboard. Next.js 14 App Router, Tailwind CSS, V
 | [features/12-load-balancers/spec.md](features/12-load-balancers/spec.md) | done |
 | [features/13-activity-log/spec.md](features/13-activity-log/spec.md) | done |
 | [features/14-iam/spec.md](features/14-iam/spec.md) | done |
+| features/15-object-storage | done |
+| features/16-dns | done |
+| features/17-kubernetes | done |
+| features/18-databases | done |
+| features/19-cdn | done |
 
 ## Invariants
 

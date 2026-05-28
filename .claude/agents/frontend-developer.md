@@ -51,7 +51,20 @@ Before writing any new UI component, open `design/components.md` and check:
 - Is the inline version good enough (< 20 lines)?
 - Does it need to be shared across 3+ pages to justify extraction?
 
+## Expandable row pattern
+
+Use `useState<string | null>(null)` for `expanded` ID. Click on a table row sets/clears it. Render a second `<tr>` below with `colSpan={all}` containing a nested table or chart. Used in: dns, load-balancers, kubernetes, activity-log.
+
+## Tab switcher pattern
+
+`useState<"a" | "b">("a")` + button group (active = `bg-brand text-white`, inactive = `border border-border text-text-muted`). Used in: iam (users/api-keys), kubernetes (nodes/namespaces).
+
+## Dual-axis AreaChart
+
+When comparing two metrics with different scales (e.g. GB vs requests), use two `<YAxis>` with `yAxisId="left"` / `yAxisId="right"` and match in `<Area>`. Used in: cdn.
+
 ## Version history
 
 - v1.0 — scaffolded with dashboard + IaaS servers pages
 - v2.0 — enriched all pages with recharts, inline domain-specific components, unique stat headers
+- v3.0 — 10 new pages: monitoring, load-balancers, activity-log, iam, object-storage, dns, kubernetes, databases, cdn + sidebar expanded
