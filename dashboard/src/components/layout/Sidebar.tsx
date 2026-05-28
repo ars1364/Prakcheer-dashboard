@@ -13,7 +13,10 @@ interface NavItem {
 
 const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
   {
-    items: [{ label: "داشبورد", href: "/", icon: "◻" }],
+    items: [
+      { label: "داشبورد", href: "/",       icon: "◻" },
+      { label: "مناطق",   href: "/regions", icon: "◎" },
+    ],
   },
   {
     group: "زیرساخت",
