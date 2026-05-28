@@ -52,7 +52,8 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
   {
     group: "خدمات",
     items: [
-      { label: "لود بالانسر", href: "/iaas/load-balancers", icon: "⊟" },
+      { label: "لود بالانسر",  href: "/iaas/load-balancers", icon: "⊟" },
+      { label: "API Gateway", href: "/api-gateway",         icon: "◉" },
       { label: "مدیریت دسترسی", href: "/iam",      icon: "◨" },
       { label: "کلیدهای SSH",   href: "/ssh-keys",  icon: "◧" },
       { label: "امنیت",         href: "/security",  icon: "◭" },
