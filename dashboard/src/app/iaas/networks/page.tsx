@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import DashboardShell from "@/components/layout/DashboardShell";
 import DashboardCard from "@/components/ui/DashboardCard";
-import MetricCard from "@/components/ui/MetricCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
 import EmptyState from "@/components/ui/EmptyState";
@@ -115,12 +114,38 @@ export default function NetworksPage() {
       selectedRegion={region}
       onRegionChange={(r) => { setRegion(r); setSearch(""); }}
     >
-      {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-16">
-        <MetricCard icon="◉" label="شبکه‌ها"     value={String(kpis.total)}       trend="neutral" trendValue="کل"   context="در این منطقه"  />
-        <MetricCard icon="⬤" label="فعال"         value={String(kpis.active)}      trend="up"      trendValue="فعال" context="آماده سرویس‌دهی" />
-        <MetricCard icon="⊞" label="زیرشبکه‌ها"  value={String(kpis.subnets)}     trend="neutral" trendValue="کل"   context="سابنت‌های تعریف‌شده" />
-        <MetricCard icon="🌐" label="IP شناور"     value={String(kpis.floatingIps)} trend="neutral" trendValue="کل"   context="اختصاص‌یافته"  />
+      {/* Network bandwidth header */}
+      <div className="glass rounded-16 px-20 py-16 mb-4">
+        <div className="flex flex-wrap gap-20 items-center">
+          <div className="flex-1 min-w-[200px]">
+            <p className="text-[12px] text-text-muted mb-10">پهنای باند ترکیبی شبکه‌های فعال</p>
+            {[
+              { label: "↓ دریافت", value: byRegion.filter(n => n.status === "active").reduce((s, n) => s + n.bwIn, 0), color: "#1a4d8f", max: 800 },
+              { label: "↑ ارسال",  value: byRegion.filter(n => n.status === "active").reduce((s, n) => s + n.bwOut, 0), color: "#16a34a", max: 800 },
+            ].map(bw => (
+              <div key={bw.label} className="flex items-center gap-10 mb-8">
+                <span className="text-[12px] text-text-muted w-[56px] shrink-0 ltr-text">{bw.label}</span>
+                <div className="flex-1 h-[10px] rounded-full bg-border overflow-hidden">
+                  <div className="h-full rounded-full transition-all" style={{ width: `${Math.min((bw.value / bw.max) * 100, 100)}%`, background: bw.color }} />
+                </div>
+                <span className="ltr-text text-[12px] font-medium text-text-main w-[60px] text-end">{bw.value} Mbps</span>
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-10">
+            {[
+              { label: "کل شبکه‌ها",  count: kpis.total,       color: "#1a4d8f", bg: "rgba(26,77,143,0.08)"   },
+              { label: "فعال",         count: kpis.active,      color: "#22c55e", bg: "rgba(34,197,94,0.08)"   },
+              { label: "زیرشبکه‌ها",  count: kpis.subnets,     color: "#8b5cf6", bg: "rgba(139,92,246,0.08)"  },
+              { label: "IP شناور",     count: kpis.floatingIps, color: "#f59e0b", bg: "rgba(245,158,11,0.08)"  },
+            ].map(item => (
+              <div key={item.label} className="flex flex-col items-center py-10 px-14 rounded-12" style={{ background: item.bg }}>
+                <span className="text-[22px] font-bold ltr-text" style={{ color: item.color }}>{item.count}</span>
+                <span className="text-[11px] text-text-muted text-center mt-2">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Topology cards + Status donut */}

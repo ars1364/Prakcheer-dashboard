@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import DashboardShell from "@/components/layout/DashboardShell";
-import MetricCard from "@/components/ui/MetricCard";
 import DashboardCard from "@/components/ui/DashboardCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import ActionMenu from "@/components/ui/ActionMenu";
@@ -137,12 +136,45 @@ export default function SnapshotsPage() {
       selectedRegion={region}
       onRegionChange={setRegion}
     >
-      {/* KPI row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
-        <MetricCard icon="📸" label="کل اسنپ‌شات‌ها" value={String(kpis.total)} />
-        <MetricCard icon="📦" label="فضای مصرفی (GB)" value={kpis.totalGB.toLocaleString("fa-IR")} />
-        <MetricCard icon="🔄" label="خودکار" value={String(kpis.auto)} />
-        <MetricCard icon="⚠️" label="خطا" value={String(kpis.error)} />
+      {/* Backup coverage header */}
+      <div className="glass rounded-16 px-20 py-16 mb-4">
+        <div className="flex flex-wrap gap-20 items-center">
+          <div className="flex-1 min-w-[200px]">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-[12px] text-text-muted">فضای مصرفی اسنپ‌شات‌ها</span>
+              <span className="ltr-text text-[13px] font-bold text-text-main">{kpis.totalGB} GB</span>
+            </div>
+            <div className="flex h-12 rounded-full overflow-hidden gap-[2px]">
+              {(() => {
+                const srv = byRegion.filter(s => s.source === "server").reduce((a, s) => a + s.size, 0);
+                const vol = byRegion.filter(s => s.source === "volume").reduce((a, s) => a + s.size, 0);
+                return (
+                  <>
+                    {srv > 0 && <div style={{ flex: srv, background: "#22c55e" }} title={`سرور: ${srv} GB`} />}
+                    {vol > 0 && <div style={{ flex: vol, background: "#f59e0b" }} title={`دیسک: ${vol} GB`} />}
+                  </>
+                );
+              })()}
+            </div>
+            <div className="flex items-center gap-16 mt-8">
+              <div className="flex items-center gap-6"><div className="w-8 h-8 rounded-2" style={{ background: "#22c55e" }} /><span className="text-[11px] text-text-muted">از سرور</span></div>
+              <div className="flex items-center gap-6"><div className="w-8 h-8 rounded-2" style={{ background: "#f59e0b" }} /><span className="text-[11px] text-text-muted">از دیسک</span></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-10">
+            {[
+              { label: "کل اسنپ‌شات", count: kpis.total, color: "#1a4d8f", bg: "rgba(26,77,143,0.08)"  },
+              { label: "خودکار",       count: kpis.auto,  color: "#3b82f6", bg: "rgba(59,130,246,0.08)" },
+              { label: "دستی",         count: byRegion.filter(s => !s.autoSnapshot).length, color: "#8b5cf6", bg: "rgba(139,92,246,0.08)" },
+              { label: "خطا",          count: kpis.error, color: "#ef4444", bg: "rgba(239,68,68,0.08)"  },
+            ].map(item => (
+              <div key={item.label} className="flex flex-col items-center py-10 px-6 rounded-12" style={{ background: item.bg }}>
+                <span className="text-[22px] font-bold ltr-text" style={{ color: item.color }}>{item.count}</span>
+                <span className="text-[11px] text-text-muted text-center mt-2">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Charts row */}
