@@ -52,6 +52,22 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
     ],
   },
   {
+    group: "اتوماسیون",
+    items: [
+      {
+        label: "اتوماسیون", href: "/automation", icon: "◫",
+        children: [
+          { label: "قالب‌های Heat",    href: "/automation/heat-templates" },
+          { label: "Stack‌ها",          href: "/automation/stacks"         },
+          { label: "رویدادهای Stack",  href: "/automation/stack-events"   },
+          { label: "خروجی‌های Stack",  href: "/automation/stack-outputs"  },
+          { label: "Workflow‌ها",       href: "/automation/workflows"      },
+          { label: "تاریخچه Job",      href: "/automation/job-history"    },
+        ],
+      },
+    ],
+  },
+  {
     group: "مدیریت پلتفرم",
     items: [
       {
@@ -70,6 +86,25 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
     ],
   },
   {
+    group: "DevKit",
+    items: [
+      {
+        label: "DevKit", href: "/devkit/api-keys", icon: "◧",
+        children: [
+          { label: "کلیدهای API",  href: "/devkit/api-keys"    },
+          { label: "مستندات API",  href: "/devkit/api-docs"    },
+          { label: "Webhook‌ها",   href: "/devkit/webhooks"    },
+          { label: "لاگ رویدادها", href: "/devkit/event-log"   },
+          { label: "تست Webhook",  href: "/devkit/test-webhook"},
+          { label: "نرخ محدودیت",  href: "/devkit/rate-limit"  },
+          { label: "نمونه SDK",    href: "/devkit/sdk-samples" },
+          { label: "Runbook‌ها",   href: "/devkit/runbooks"    },
+          { label: "Mirror‌ها",    href: "/devkit/mirrors"     },
+        ],
+      },
+    ],
+  },
+  {
     group: "خدمات",
     items: [
       { label: "لود بالانسر",  href: "/iaas/load-balancers", icon: "⊟" },
@@ -83,7 +118,13 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
       { label: "صورتحساب",     href: "/billing",        icon: "◈" },
       { label: "کاوشگر هزینه", href: "/cost-explorer",  icon: "◉" },
       { label: "پروفایل",   href: "/profile",  icon: "◨" },
-      { label: "تنظیمات",  href: "/settings", icon: "◧" },
+      {
+        label: "تنظیمات", href: "/settings", icon: "◧",
+        children: [
+          { label: "عمومی",       href: "/settings/general"  },
+          { label: "زبان و منطقه", href: "/settings/language" },
+        ],
+      },
     ],
   },
 ];
