@@ -24,27 +24,82 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
       {
         label: "زیرساخت ابری", href: "/iaas", icon: "◉",
         children: [
-          { label: "سرورها",    href: "/iaas/servers" },
-          { label: "شبکه‌ها",  href: "/iaas/networks" },
-          { label: "فایروال",  href: "/iaas/firewall" },
-          { label: "دیسک‌ها",  href: "/iaas/volumes" },
-          { label: "IP شناور", href: "/iaas/floating-ips" },
-          { label: "اسنپ‌شات", href: "/iaas/snapshots" },
+          { label: "کاتالوگ",   href: "/iaas/catalog"        },
+          { label: "سرورها",    href: "/iaas/servers"        },
+          { label: "شبکه‌ها",  href: "/iaas/networks"       },
+          { label: "فایروال",  href: "/iaas/firewall"       },
+          { label: "دیسک‌ها",  href: "/iaas/volumes"        },
+          { label: "IP شناور", href: "/iaas/floating-ips"   },
+          { label: "اسنپ‌شات", href: "/iaas/snapshots"      },
         ],
       },
-      { label: "VPC",              href: "/vpc",             icon: "◱" },
-      { label: "ذخیره‌سازی ابری", href: "/object-storage", icon: "◫" },
-      { label: "کوبرنتیس",        href: "/kubernetes",           icon: "⬡" },
-      { label: "رجیستری Container", href: "/container-registry", icon: "◫" },
-      { label: "پایگاه داده",     href: "/databases",       icon: "◈" },
-      { label: "CDN",             href: "/cdn",             icon: "◉" },
-      { label: "DNS",             href: "/dns",             icon: "◎" },
+      {
+        label: "VPC", href: "/vpc", icon: "◱",
+        children: [
+          { label: "شبکه‌ها",    href: "/vpc/networks" },
+          { label: "زیرشبکه‌ها", href: "/vpc/subnets"  },
+          { label: "مسیریابی",   href: "/vpc/routing"  },
+          { label: "Peering",    href: "/vpc/peering"  },
+        ],
+      },
+      {
+        label: "ذخیره‌سازی ابری", href: "/object-storage", icon: "◫",
+        children: [
+          { label: "Bucket‌ها",      href: "/object-storage/buckets"      },
+          { label: "کلیدهای دسترسی", href: "/object-storage/access-keys" },
+        ],
+      },
+      {
+        label: "کوبرنتیس", href: "/kubernetes", icon: "⬡",
+        children: [
+          { label: "کلاسترها",   href: "/kubernetes/clusters"   },
+          { label: "Node Pool",  href: "/kubernetes/node-pools" },
+          { label: "Workload‌ها",href: "/kubernetes/workloads"  },
+        ],
+      },
+      {
+        label: "رجیستری Container", href: "/container-registry", icon: "◫",
+        children: [
+          { label: "مخازن",  href: "/container-registry/repositories" },
+          { label: "تصاویر", href: "/container-registry/images"       },
+        ],
+      },
+      {
+        label: "پایگاه داده", href: "/databases", icon: "◈",
+        children: [
+          { label: "نمونه‌ها",    href: "/databases/instances" },
+          { label: "پشتیبان‌ها", href: "/databases/backups"   },
+        ],
+      },
+      {
+        label: "CDN", href: "/cdn", icon: "◉",
+        children: [
+          { label: "Zone‌ها",     href: "/cdn/zones"        },
+          { label: "Origin‌ها",   href: "/cdn/origins"      },
+          { label: "گواهی‌ها",   href: "/cdn/certificates" },
+        ],
+      },
+      {
+        label: "DNS", href: "/dns", icon: "◎",
+        children: [
+          { label: "Zone‌ها",    href: "/dns/zones"   },
+          { label: "رکوردها",   href: "/dns/records" },
+        ],
+      },
     ],
   },
   {
     group: "مشاهده‌پذیری",
     items: [
-      { label: "مانیتورینگ", href: "/monitoring",      icon: "◑" },
+      {
+        label: "مانیتورینگ", href: "/monitoring", icon: "◑",
+        children: [
+          { label: "داشبوردها", href: "/monitoring/dashboards" },
+          { label: "متریک‌ها",  href: "/monitoring/metrics"   },
+          { label: "قوانین",    href: "/monitoring/rules"     },
+          { label: "لاگ‌ها",    href: "/monitoring/logs"      },
+        ],
+      },
       { label: "هشدارها",   href: "/alerts",          icon: "◭" },
       { label: "اعلان‌ها",  href: "/notifications",   icon: "◎" },
       { label: "زمان‌بندی", href: "/scheduler",       icon: "◷" },
@@ -109,13 +164,45 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
     items: [
       { label: "لود بالانسر",  href: "/iaas/load-balancers", icon: "⊟" },
       { label: "API Gateway", href: "/api-gateway",         icon: "◉" },
-      { label: "مدیریت دسترسی", href: "/iam",      icon: "◨" },
+      {
+        label: "مدیریت دسترسی", href: "/iam", icon: "◨",
+        children: [
+          { label: "کاربران",         href: "/iam/users"            },
+          { label: "گروه‌ها",         href: "/iam/groups"           },
+          { label: "سرویس اکانت",    href: "/iam/service-accounts" },
+          { label: "سیاست‌ها",       href: "/iam/policies"         },
+        ],
+      },
       { label: "کلیدهای SSH",   href: "/ssh-keys",  icon: "◧" },
-      { label: "امنیت",         href: "/security",  icon: "◭" },
-      { label: "پشتیبان‌گیری",href: "/backup",   icon: "◫" },
+      {
+        label: "امنیت", href: "/security", icon: "◭",
+        children: [
+          { label: "گواهی‌های SSL",    href: "/security/certificates"     },
+          { label: "سیاست‌های فایروال", href: "/security/firewall-policies" },
+        ],
+      },
+      {
+        label: "پشتیبان‌گیری", href: "/backup", icon: "◫",
+        children: [
+          { label: "سیاست‌ها", href: "/backup/policies" },
+        ],
+      },
       { label: "مارکت‌پلیس", href: "/marketplace",icon: "◩" },
-      { label: "پشتیبانی",  href: "/support",   icon: "◎" },
-      { label: "صورتحساب",     href: "/billing",        icon: "◈" },
+      {
+        label: "پشتیبانی", href: "/support", icon: "◎",
+        children: [
+          { label: "تیکت‌ها", href: "/support/tickets" },
+        ],
+      },
+      {
+        label: "صورتحساب", href: "/billing", icon: "◈",
+        children: [
+          { label: "فاکتورها",     href: "/billing/invoices"     },
+          { label: "تراکنش‌ها",   href: "/billing/transactions" },
+          { label: "اعتبارها",    href: "/billing/credits"      },
+          { label: "بودجه",       href: "/billing/budget"       },
+        ],
+      },
       { label: "کاوشگر هزینه", href: "/cost-explorer",  icon: "◉" },
       { label: "پروفایل",   href: "/profile",  icon: "◨" },
       {
