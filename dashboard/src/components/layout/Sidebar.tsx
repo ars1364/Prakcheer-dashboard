@@ -46,6 +46,7 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
     items: [
       { label: "مانیتورینگ", href: "/monitoring",   icon: "◑" },
       { label: "هشدارها",   href: "/alerts",       icon: "◭" },
+      { label: "زمان‌بندی", href: "/scheduler",    icon: "◷" },
       { label: "لاگ فعالیت",href: "/activity-log", icon: "◫" },
     ],
   },
