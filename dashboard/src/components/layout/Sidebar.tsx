@@ -21,9 +21,12 @@ const NAV_GROUPS: { group?: string; items: NavItem[] }[] = [
       {
         label: "زیرساخت ابری", href: "/iaas", icon: "◉",
         children: [
-          { label: "سرورها",  href: "/iaas/servers" },
-          { label: "شبکه‌ها", href: "/iaas/networks" },
-          { label: "فایروال", href: "/iaas/firewall" },
+          { label: "سرورها",    href: "/iaas/servers" },
+          { label: "شبکه‌ها",  href: "/iaas/networks" },
+          { label: "فایروال",  href: "/iaas/firewall" },
+          { label: "دیسک‌ها",  href: "/iaas/volumes" },
+          { label: "IP شناور", href: "/iaas/floating-ips" },
+          { label: "اسنپ‌شات", href: "/iaas/snapshots" },
         ],
       },
     ],
